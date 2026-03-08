@@ -53,9 +53,5 @@ export class ALBConstruct extends Construct {
     listener.addTargetGroups("Targets", {
       targetGroups: [target]
     })
-
-
-
-
   }
 }
