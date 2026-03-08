@@ -1,3 +1,4 @@
+import * as cdk from "aws-cdk-lib";
 import { Stack } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
 import { EcsConstruct } from "./modules/ecs-construct";
@@ -6,6 +7,9 @@ import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { VpcConstruct } from "./modules/vpc-construct";
 import { DynamoDBConstruct } from "./modules/dynamodb-construct";
+import { ALBConstruct } from "./modules/alb-construct";
+import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2"
+
 
 export class EcsStack extends Stack {
   constructor(scope: Construct, id: string) {
@@ -17,9 +21,14 @@ export class EcsStack extends Stack {
       subnetConfiguration: [
         {
           cidrMask: 24,
-          name: "ecs-plublic-subnet",
+          name: "ecs-plublic-subnets",
           subnetType: ec2.SubnetType.PUBLIC,
         },
+        {
+          cidrMask: 24,
+          name: "ecs-public-subents",
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
+        }
       ],
       availabilityZones: ["us-east-1a", "us-east-1b"],
       createInternetGateway: true,
@@ -30,7 +39,7 @@ export class EcsStack extends Stack {
 
     const dynamodbTable = new DynamoDBConstruct(this, "dynamodb", {
       tableName: "url-shortener-table",
-      partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
+      partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
       billing: dynamodb.Billing.onDemand(),
       pointInTimeRecoverySpecification: {
         pointInTimeRecoveryEnabled: true,
@@ -38,16 +47,16 @@ export class EcsStack extends Stack {
     });
 
     new EcsConstruct(this, "ecs", {
-      clusterName: "my-ecs-v2-project",
+      clusterName: "my-ecsvs-cluster",
       vpc: ecsVpc.vpc,
       vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
       securityGroups: [ecsVpc.securityGroup],
       enableFargateCapacityProviders: true,
-      executionRoleName: "ecs-url-shortener-execution-role",
-      taskRoleName: "ecs-url-shortener-task-role",
-      serviceName: "url-shortener-ecs-service",
+      executionRoleName: "ecsv2-url-shortener-execution-role",
+      taskRoleName: "ecsv2-url-shortener-task-role",
+      serviceName: "url-shortener-ecsv2-service",
       desiredCount: 2,
       memoryLimitMiB: 512,
       cpu: 256,
@@ -58,6 +67,7 @@ export class EcsStack extends Stack {
       resources: [dynamodbTable.dynamoDBTable.tableArn],
       environment: {
         TABLE_NAME: "url-shortener-table",
+        AWS_REGION: "us-east-1"
       },
       portMappings: [
         {
@@ -65,5 +75,22 @@ export class EcsStack extends Stack {
         },
       ],
     });
+    
+    new ALBConstruct (this, "alb", {
+      loadBalancerName: "ecsv2-loadbalncer",
+      vpc: ecsVpc.vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PUBLIC
+      },
+      internetFacing: true,
+      albSecurityGroup: ecsVpc.albSecurityGroup,
+      health_check: {
+        path: "/",
+        interval: cdk.Duration.seconds(30)
+      },
+        targetType: elbv2.TargetType.IP,
+        crossZoneEnabled: true,
+        ipAddressType: elbv2.TargetGroupIpAddressType.IPV4
+      })
+    }
   }
-}
