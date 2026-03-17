@@ -14,8 +14,10 @@ export interface vpcConstructProps {
   mapPublicIpOnLaunch?: boolean;
   serviceRegion?: string;
   vpcInterfaceEndpointServiceECR?: ec2.IInterfaceVpcEndpointService;
+  vpcInterfaceEndpointServiceECRDocker?: ec2.IInterfaceVpcEndpointService;
   vpcInterfaceEndpointServiceCloudWatch?: ec2.IInterfaceVpcEndpointService;
   vpcGatewayEndpointServiceDynamodb?: ec2.IGatewayVpcEndpointService;
+  vpcGatewayEndpointServiceS3?: ec2.IGatewayVpcEndpointService;
   ipAddressType?: ec2.VpcEndpointIpAddressType;
   privateDnsEnabled?: boolean;
   privateDnsOnlyForInboundResolverEndpoint?: ec2.VpcEndpointPrivateDnsOnlyForInboundResolverEndpoint;
@@ -60,14 +62,25 @@ export class VpcConstruct extends Construct {
       allowAllOutbound: props.allowAllOutbound,
     });
 
-    if (props.vpcInterfaceEndpointServiceECR) {
+    if (props.vpcInterfaceEndpointServiceECRDocker) {
+      this.vpc.addInterfaceEndpoint("ecrDockerVpcInterfaceEndpoint", {
+        service: props.vpcInterfaceEndpointServiceECRDocker,
+        subnets: this.privateSubnets,
+        serviceRegion: props.serviceRegion,
+        ipAddressType: props.ipAddressType,
+        privateDnsEnabled: props.privateDnsEnabled,
+        privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint,
+      })
+    }
+
+    if (props.vpcInterfaceEndpointServiceECRDocker && props.vpcInterfaceEndpointServiceECR) {
       this.vpc.addInterfaceEndpoint("ecrVpcInterfaceEndpoint", {
         service: props.vpcInterfaceEndpointServiceECR,
         subnets: this.privateSubnets,
         serviceRegion: props.serviceRegion,
         ipAddressType: props.ipAddressType,
         privateDnsEnabled: props.privateDnsEnabled,
-        privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint
+        privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint,
       })
     }
 
@@ -85,6 +98,13 @@ export class VpcConstruct extends Construct {
     if (props.vpcGatewayEndpointServiceDynamodb) {
       this.vpc.addGatewayEndpoint("dynmaodbVpcGatewayEndpoint", {
         service: props.vpcGatewayEndpointServiceDynamodb,
+        subnets: [this.privateSubnets],        
+      })
+    }
+
+    if (props.vpcGatewayEndpointServiceS3) {
+      this.vpc.addGatewayEndpoint("s3VpcGatewayEndpoint", {
+        service: props.vpcGatewayEndpointServiceS3,
         subnets: [this.privateSubnets],        
       })
     }
