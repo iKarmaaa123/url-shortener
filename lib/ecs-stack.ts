@@ -8,8 +8,8 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { VpcConstruct } from "./modules/vpc-construct";
 import { DynamoDBConstruct } from "./modules/dynamodb-construct";
 import { ALBConstruct } from "./modules/alb-construct";
-import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2"
-
+import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import { WafContruct } from "./modules/waf-construct";
 
 export class EcsStack extends Stack {
   constructor(scope: Construct, id: string) {
@@ -27,14 +27,21 @@ export class EcsStack extends Stack {
         {
           cidrMask: 24,
           name: "ecs-public-subents",
-          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
-        }
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        },
       ],
       availabilityZones: ["us-east-1a", "us-east-1b"],
       createInternetGateway: true,
       ecsSecurityGroupName: "ecs-security-group",
+      albSecurityGroupName: "alb-security-group",
       allowAllOutbound: true,
       natGateways: 0,
+      serviceRegion: "us-east-1",
+      ipAddressType: ec2.VpcEndpointIpAddressType.IPV4,
+      privateDnsEnabled: true,
+      vpcInterfaceEndpointServiceECR: ec2.InterfaceVpcEndpointAwsService.ECR,
+      vpcInterfaceEndpointServiceCloudWatch: ec2.InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
+      vpcGatewayEndpointServiceDynamodb: ec2.GatewayVpcEndpointAwsService.DYNAMODB,
     });
 
     const dynamodbTable = new DynamoDBConstruct(this, "dynamodb", {
@@ -47,12 +54,12 @@ export class EcsStack extends Stack {
     });
 
     new EcsConstruct(this, "ecs", {
-      clusterName: "my-ecsvs-cluster",
+      clusterName: "my-ecsv2-cluster",
       vpc: ecsVpc.vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       },
-      securityGroups: [ecsVpc.securityGroup],
+      securityGroups: [ecsVpc.ecsSecurityGroup],
       enableFargateCapacityProviders: true,
       executionRoleName: "ecsv2-url-shortener-execution-role",
       taskRoleName: "ecsv2-url-shortener-task-role",
@@ -67,7 +74,7 @@ export class EcsStack extends Stack {
       resources: [dynamodbTable.dynamoDBTable.tableArn],
       environment: {
         TABLE_NAME: "url-shortener-table",
-        AWS_REGION: "us-east-1"
+        AWS_REGION: "us-east-1",
       },
       portMappings: [
         {
@@ -75,22 +82,50 @@ export class EcsStack extends Stack {
         },
       ],
     });
-    
-    new ALBConstruct (this, "alb", {
+
+    const ecsAlb = new ALBConstruct(this, "alb", {
       loadBalancerName: "ecsv2-loadbalncer",
       vpc: ecsVpc.vpc,
       vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC
+        subnetType: ec2.SubnetType.PUBLIC,
       },
       internetFacing: true,
       albSecurityGroup: ecsVpc.albSecurityGroup,
       health_check: {
         path: "/",
-        interval: cdk.Duration.seconds(30)
+        interval: cdk.Duration.seconds(30),
       },
-        targetType: elbv2.TargetType.IP,
-        crossZoneEnabled: true,
-        ipAddressType: elbv2.TargetGroupIpAddressType.IPV4
-      })
-    }
+      targetType: elbv2.TargetType.IP,
+      crossZoneEnabled: true,
+      ipAddressType: elbv2.TargetGroupIpAddressType.IPV4,
+      http_port: 80,
+      http_protocol: elbv2.ApplicationProtocol.HTTP,
+    });
+
+    new WafContruct(this, "waf", {
+      block: {
+        customResponse: {
+          responseCode: 403,
+        },
+      },
+      scope: "REGIONAL",
+      name: "ecsWaf",
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: true,
+        metricName: "wafMetric",
+        sampledRequestsEnabled: true,
+      },
+      ruleName: "ecsWafRule",
+      priority: 0,
+      action: {
+        allow: {},
+      },
+      statement: {
+        geoMatchStatement: {
+          countryCodes: ["US"],
+        },
+      },
+      resourceArn: ecsAlb.alb.loadBalancerArn,
+    });
   }
+}
