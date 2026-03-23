@@ -21,12 +21,12 @@ export class EcsStack extends Stack {
       subnetConfiguration: [
         {
           cidrMask: 24,
-          name: "ecs-plublic-subnets",
+          name: "ecs-public-subnets",
           subnetType: ec2.SubnetType.PUBLIC,
         },
         {
           cidrMask: 24,
-          name: "ecs-public-subents",
+          name: "ecs-private-subnets",
           subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
         },
       ],
@@ -40,11 +40,13 @@ export class EcsStack extends Stack {
       ipAddressType: ec2.VpcEndpointIpAddressType.IPV4,
       privateDnsEnabled: true,
       vpcInterfaceEndpointServiceECR: ec2.InterfaceVpcEndpointAwsService.ECR,
+      vpcInterfaceEndpointServiceECRDocker: ec2.InterfaceVpcEndpointAwsService.ECR_DOCKER,
       vpcInterfaceEndpointServiceCloudWatch: ec2.InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
       vpcGatewayEndpointServiceDynamodb: ec2.GatewayVpcEndpointAwsService.DYNAMODB,
+      vpcGatewayEndpointServiceS3: ec2.GatewayVpcEndpointAwsService.S3
     });
 
-    const dynamodbTable = new DynamoDBConstruct(this, "dynamodb", {
+    const dynamodbConstruct = new DynamoDBConstruct(this, "dynamodb", {
       tableName: "url-shortener-table",
       partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
       billing: dynamodb.Billing.onDemand(),
@@ -53,7 +55,7 @@ export class EcsStack extends Stack {
       },
     });
 
-    new EcsConstruct(this, "ecs", {
+    const ecsConstruct = new EcsConstruct(this, "ecs", {
       clusterName: "my-ecsv2-cluster",
       vpc: ecsVpc.vpc,
       vpcSubnets: {
@@ -71,7 +73,7 @@ export class EcsStack extends Stack {
         "648767092427.dkr.ecr.us-east-1.amazonaws.com/url-shortener:latest",
       ),
       actions: ["*"],
-      resources: [dynamodbTable.dynamoDBTable.tableArn],
+      resources: [dynamodbConstruct.dynamoDBTable.tableArn],
       environment: {
         TABLE_NAME: "url-shortener-table",
         AWS_REGION: "us-east-1",
@@ -81,9 +83,11 @@ export class EcsStack extends Stack {
           containerPort: 8080,
         },
       ],
+      assignPublicIp: false,
+      enableExecuteCommand: true
     });
 
-    const ecsAlb = new ALBConstruct(this, "alb", {
+    const albConstruct = new ALBConstruct(this, "alb", {
       loadBalancerName: "ecsv2-loadbalncer",
       vpc: ecsVpc.vpc,
       vpcSubnets: {
@@ -92,7 +96,7 @@ export class EcsStack extends Stack {
       internetFacing: true,
       albSecurityGroup: ecsVpc.albSecurityGroup,
       health_check: {
-        path: "/",
+        path: "/healthz",
         interval: cdk.Duration.seconds(30),
       },
       targetType: elbv2.TargetType.IP,
@@ -101,6 +105,8 @@ export class EcsStack extends Stack {
       http_port: 80,
       http_protocol: elbv2.ApplicationProtocol.HTTP,
     });
+
+    ecsConstruct.ecsService.attachToApplicationTargetGroup(albConstruct.targetGroup)
 
     new WafContruct(this, "waf", {
       block: {
@@ -122,10 +128,10 @@ export class EcsStack extends Stack {
       },
       statement: {
         geoMatchStatement: {
-          countryCodes: ["US"],
+          countryCodes: ["US", "GB"],
         },
       },
-      resourceArn: ecsAlb.alb.loadBalancerArn,
+      resourceArn: albConstruct.alb.loadBalancerArn
     });
   }
 }
