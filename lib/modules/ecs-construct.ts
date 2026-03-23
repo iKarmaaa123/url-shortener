@@ -27,6 +27,8 @@ export interface EcsConstructProps {
 }
 
 export class EcsConstruct extends Construct {
+  public readonly ecsService: ecs.FargateService;
+
   constructor(scope: Construct, id: string, props: EcsConstructProps) {
     super(scope, id);
 
@@ -76,7 +78,7 @@ export class EcsConstruct extends Construct {
       logging: ecs.AwsLogDriver.awsLogs({ streamPrefix: "ecs-project-v2" }),
     });
 
-    new ecs.FargateService(this, "fargateService", {
+    this.ecsService = new ecs.FargateService(this, "fargateService", {
       serviceName: props.serviceName,
       desiredCount: props.desiredCount,
       cluster,
