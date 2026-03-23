@@ -1,6 +1,4 @@
 import * as waf from "aws-cdk-lib/aws-wafv2";
-import { ILoadBalancerRef } from "aws-cdk-lib/aws-elasticloadbalancing";
-import { IGraphQLApiRef } from "aws-cdk-lib/aws-appsync";
 import { Construct } from "constructs";
 
 interface WafConstructProps {
