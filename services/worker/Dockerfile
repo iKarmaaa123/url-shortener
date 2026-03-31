@@ -1,23 +1,21 @@
-FROM golang:1.24-alpine AS build
+FROM golang:1.26-alpine AS build
 
 WORKDIR /wd
 
+RUN apk add --no-cache git 
+
 COPY go.mod .
 
-RUN go mod download
+RUN go mod download all
 
 COPY main.go .
 
-RUN go build -o /main.go .
+RUN go build -o app main.go
 
 FROM golang:1.19-alpine
 
 WORKDIR /app
 
-COPY --from=build /wd .
+COPY --from=build /wd/app .
 
-RUN adduser non-root
-
-USER non-root
-
-CMD ["main.go"]
+CMD ["./app"]

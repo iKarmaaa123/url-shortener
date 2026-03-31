@@ -10,11 +10,14 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/sqs"
 	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
+var sqsClient *sqs.SQS
 
 type ClickEvent struct {
 	ShortCode string `json:"short_code"`
@@ -25,6 +28,9 @@ type ClickEvent struct {
 }
 
 func main() {
+	sess := session.Must(session.NewSession(&aws.Config{
+	}))
+	sqsClient = sqs.New(sess)
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
 		log.Fatal("DATABASE_URL is required")
@@ -117,14 +123,26 @@ func pollSQS(ctx context.Context, queueURL string) {
 			log.Println("Worker stopped")
 			return
 		default:
-			messages := receiveSQSMessages(queueURL)
+			messages, err := receiveSQSMessages(queueURL)
+			if err != nil {
+				log.Printf("Failed to receive messages: %v", err)
+				time.Sleep(5 * time.Second)
+				continue
+			}
 			for _, msg := range messages {
-				if err := processClickEvent(msg); err != nil {
+				if msg.Body == nil {
+					continue
+				}
+				if err := processClickEvent(*msg.Body); err != nil {
 					log.Printf("Failed to process event: %v", err)
 					continue
 				}
 				// Delete message from queue after successful processing
-				log.Printf("Processed click event: %s", msg)
+				if err := deleteSQSMessage(queueURL, msg); err != nil {
+					log.Printf("Failed to delete message: %v", err)
+				} else {
+					log.Printf("Processed and deleted click event")
+				}
 			}
 			if len(messages) == 0 {
 				time.Sleep(5 * time.Second)
@@ -133,11 +151,30 @@ func pollSQS(ctx context.Context, queueURL string) {
 	}
 }
 
-func receiveSQSMessages(queueURL string) []string {
+func receiveSQSMessages(queueURL string) ([]*sqs.Message, error) {
 	// Students implement with AWS SDK SQS ReceiveMessage
+	
 	// Use long polling: WaitTimeSeconds = 20
 	// MaxNumberOfMessages = 10
-	return nil
+
+	resp, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
+		QueueUrl: aws.String(queueURL),
+		WaitTimeSeconds:aws.Int64(20),
+		VisibilityTimeout: aws.Int64(30),
+		MaxNumberOfMessages: aws.Int64(10),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return resp.Messages, nil
+}
+
+func deleteSQSMessage(queueURL string, message *sqs.Message) error {
+	_, err := sqsClient.DeleteMessage(&sqs.DeleteMessageInput{
+		QueueUrl: aws.String(queueURL),
+		ReceiptHandle: message.ReceiptHandle,
+	})
+	return err
 }
 
 func processClickEvent(raw string) error {
