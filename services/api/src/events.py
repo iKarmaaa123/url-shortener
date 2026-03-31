@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 _sqs_client = None
 
-
 def _get_sqs():
     global _sqs_client
     if _sqs_client is not None:
