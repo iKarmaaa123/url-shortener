@@ -1,8 +1,8 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse
 import os, hashlib, time, json
-from .db import put_mapping, get_mapping, get_backend_type, increment_clicks
-from .events import publish_click_event
+from db import put_mapping, get_mapping, get_backend_type, increment_clicks
+from events import publish_click_event
 
 app = FastAPI()
 
