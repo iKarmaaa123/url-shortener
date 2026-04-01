@@ -1,7 +1,7 @@
 import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 
-export interface vpcConstructProps {
+export interface VpcConstructProps {
   vpcName?: string;
   ipAddresses?: ec2.IIpAddresses;
   availabilityZones?: string[];
@@ -13,11 +13,6 @@ export interface vpcConstructProps {
   allowAllOutbound?: boolean;
   mapPublicIpOnLaunch?: boolean;
   serviceRegion?: string;
-  vpcInterfaceEndpointServiceECR?: ec2.IInterfaceVpcEndpointService;
-  vpcInterfaceEndpointServiceECRDocker?: ec2.IInterfaceVpcEndpointService;
-  vpcInterfaceEndpointServiceCloudWatch?: ec2.IInterfaceVpcEndpointService;
-  vpcGatewayEndpointServiceDynamodb?: ec2.IGatewayVpcEndpointService;
-  vpcGatewayEndpointServiceS3?: ec2.IGatewayVpcEndpointService;
   ipAddressType?: ec2.VpcEndpointIpAddressType;
   privateDnsEnabled?: boolean;
   privateDnsOnlyForInboundResolverEndpoint?: ec2.VpcEndpointPrivateDnsOnlyForInboundResolverEndpoint;
@@ -30,7 +25,7 @@ export class VpcConstruct extends Construct {
   public readonly publicSubnets: ec2.SubnetSelection;
   public readonly privateSubnets: ec2.SubnetSelection;
 
-  constructor(scope: Construct, id: string, props: vpcConstructProps) {
+  constructor(scope: Construct, id: string, props: VpcConstructProps) {
     super(scope, id);
 
     this.vpc = new ec2.Vpc(this, "vpc", {
@@ -62,55 +57,54 @@ export class VpcConstruct extends Construct {
       allowAllOutbound: props.allowAllOutbound,
     });
 
-    if (props.vpcInterfaceEndpointServiceECRDocker) {
-      this.vpc.addInterfaceEndpoint("ecrDockerVpcInterfaceEndpoint", {
-        service: props.vpcInterfaceEndpointServiceECRDocker,
-        subnets: this.privateSubnets,
-        serviceRegion: props.serviceRegion,
-        ipAddressType: props.ipAddressType,
-        privateDnsEnabled: props.privateDnsEnabled,
-        privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint,
-      })
-    }
+    this.vpc.addInterfaceEndpoint("ecrDockerVpcInterfaceEndpoint", {
+      service: ec2.InterfaceVpcEndpointAwsService.ECR_DOCKER,
+      subnets: this.privateSubnets,
+      serviceRegion: props.serviceRegion,
+      ipAddressType: props.ipAddressType,
+      privateDnsEnabled: props.privateDnsEnabled,
+      privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint,
+    })
 
-    if (props.vpcInterfaceEndpointServiceECRDocker && props.vpcInterfaceEndpointServiceECR) {
-      this.vpc.addInterfaceEndpoint("ecrVpcInterfaceEndpoint", {
-        service: props.vpcInterfaceEndpointServiceECR,
-        subnets: this.privateSubnets,
-        serviceRegion: props.serviceRegion,
-        ipAddressType: props.ipAddressType,
-        privateDnsEnabled: props.privateDnsEnabled,
-        privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint,
-      })
-    }
+    this.vpc.addInterfaceEndpoint("ecrVpcInterfaceEndpoint", {
+      service: ec2.InterfaceVpcEndpointAwsService.ECR,
+      subnets: this.privateSubnets,
+      serviceRegion: props.serviceRegion,
+      ipAddressType: props.ipAddressType,
+      privateDnsEnabled: props.privateDnsEnabled,
+      privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint,
+    })
 
-    if (props.vpcInterfaceEndpointServiceCloudWatch) {
-      this.vpc.addInterfaceEndpoint("cloudWatchVpcInterfaceEndpoint", {
-        service: props.vpcInterfaceEndpointServiceCloudWatch,
-        subnets: this.privateSubnets,
-        serviceRegion: props.serviceRegion,
-        ipAddressType: props.ipAddressType,
-        privateDnsEnabled: props.privateDnsEnabled,
-        privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint
-      })
-    }
+    this.vpc.addInterfaceEndpoint("cloudWatchVpcInterfaceEndpoint", {
+      service: ec2.InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
+      subnets: this.privateSubnets,
+      serviceRegion: props.serviceRegion,
+      ipAddressType: props.ipAddressType,
+      privateDnsEnabled: props.privateDnsEnabled,
+      privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint
+    })
 
-    if (props.vpcGatewayEndpointServiceDynamodb) {
-      this.vpc.addGatewayEndpoint("dynmaodbVpcGatewayEndpoint", {
-        service: props.vpcGatewayEndpointServiceDynamodb,
-        subnets: [this.privateSubnets],        
-      })
-    }
+    this.vpc.addInterfaceEndpoint("sqsVpcInterfaceEndpoint", {
+      service: ec2.InterfaceVpcEndpointAwsService.SQS,
+      subnets: this.privateSubnets,
+      serviceRegion: props.serviceRegion,
+      ipAddressType: props.ipAddressType,
+      privateDnsEnabled: props.privateDnsEnabled,
+      privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint
+    })
 
-    if (props.vpcGatewayEndpointServiceS3) {
-      this.vpc.addGatewayEndpoint("s3VpcGatewayEndpoint", {
-        service: props.vpcGatewayEndpointServiceS3,
-        subnets: [this.privateSubnets],        
-      })
-    }
-
+    this.vpc.addGatewayEndpoint("dynmaodbVpcGatewayEndpoint", {
+      service: ec2.GatewayVpcEndpointAwsService.DYNAMODB,
+      subnets: [this.privateSubnets],        
+    })
+  
+    this.vpc.addGatewayEndpoint("s3VpcGatewayEndpoint", {
+      service: ec2.GatewayVpcEndpointAwsService.S3,
+      subnets: [this.privateSubnets],        
+    })
+    
     this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8080));
     this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(443));
-    this.ecsSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80));
+    this.albSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80));
   }
 }
