@@ -11,14 +11,15 @@ export interface EcsConstructProps {
   enableFargateCapacityProviders?: boolean;
   executionRoleName?: string;
   taskRoleName?: string;
-  actions?: string[];
-  resources?: string[];
+  dynamodbActions?: string[];
+  dynamodbResources?: string[];
+  sqsActions?: string[];
+  sqsResources?: string[];
   serviceName?: string;
   desiredCount?: number;
   memoryLimitMiB?: number;
   cpu?: number;
   portMappings?: ecs.PortMapping[];
-  image: ecs.ContainerImage;
   environment?: {
     [key: string]: string;
   };
@@ -27,7 +28,9 @@ export interface EcsConstructProps {
 }
 
 export class EcsConstruct extends Construct {
-  public readonly ecsService: ecs.FargateService;
+  public readonly ecsApiService: ecs.FargateService;
+  public readonly ecsWorkerService: ecs.FargateService;
+  public readonly ecsDashboardService: ecs.FargateService;
 
   constructor(scope: Construct, id: string, props: EcsConstructProps) {
     super(scope, id);
@@ -48,11 +51,17 @@ export class EcsConstruct extends Construct {
     });
 
     const dynamoDBPolicy = new iam.PolicyStatement({
-      actions: props.actions,
-      resources: props.resources,
+      actions: props.dynamodbActions,
+      resources: props.dynamodbResources,
     });
 
+    const sqsPolicy = new iam.PolicyStatement({
+      actions: props.sqsActions,
+      resources: props.sqsResources
+    })
+
     taskRole.addToPrincipalPolicy(dynamoDBPolicy);
+    taskRole.addToPrincipalPolicy(sqsPolicy)
 
     const cluster = new ecs.Cluster(this, "Cluster", {
       clusterName: props.clusterName,
@@ -60,9 +69,9 @@ export class EcsConstruct extends Construct {
       enableFargateCapacityProviders: props.enableFargateCapacityProviders,
     });
 
-    const taskDefinition = new ecs.FargateTaskDefinition(
+    const apiTaskDefinition = new ecs.FargateTaskDefinition(
       this,
-      "taskDefinition",
+      "apiTaskDefinition",
       {
         memoryLimitMiB: props.memoryLimitMiB,
         cpu: props.cpu,
@@ -71,18 +80,76 @@ export class EcsConstruct extends Construct {
       },
     );
 
-    taskDefinition.addContainer("web", {
+    const workerTaskDefinition = new ecs.FargateTaskDefinition(
+      this,
+      "workerTaskDefinition",
+      {
+        memoryLimitMiB: props.memoryLimitMiB,
+        cpu: props.cpu,
+        executionRole: executionRole,
+        taskRole: taskRole,
+      },
+    );
+
+    const dashboardTaskDefinition = new ecs.FargateTaskDefinition(
+      this,
+      "dashboardTaskDefinition",
+      {
+        memoryLimitMiB: props.memoryLimitMiB,
+        cpu: props.cpu,
+        executionRole: executionRole,
+        taskRole: taskRole,
+      },
+    );
+
+    apiTaskDefinition.addContainer("web", {
       image: props.image,
       environment: props.environment,
       portMappings: props.portMappings,
       logging: ecs.AwsLogDriver.awsLogs({ streamPrefix: "ecs-project-v2" }),
     });
 
-    this.ecsService = new ecs.FargateService(this, "fargateService", {
-      serviceName: props.serviceName,
+    workerTaskDefinition.addContainer("web", {
+      image: props.image,
+      environment: props.environment,
+      portMappings: props.portMappings,
+      logging: ecs.AwsLogDriver.awsLogs({ streamPrefix: "ecs-project-v2" }),
+    });
+
+    dashboardTaskDefinition.addContainer("web", {
+      image: props.image,
+      environment: props.environment,
+      portMappings: props.portMappings,
+      logging: ecs.AwsLogDriver.awsLogs({ streamPrefix: "ecs-project-v2" }),
+    });
+
+    this.ecsApiService = new ecs.FargateService(this, "apiFargateService", {
+      serviceName: "ecsApiService",
       desiredCount: props.desiredCount,
       cluster,
-      taskDefinition,
+      taskDefinition: apiTaskDefinition,
+      vpcSubnets: props.vpcSubnets,
+      securityGroups: props.securityGroups,
+      assignPublicIp: props.assignPublicIp,
+      enableExecuteCommand: props.enableExecuteCommand
+    });
+
+     this.ecsWorkerService = new ecs.FargateService(this, "workerFargateService", {
+      serviceName: "ecsWorkerService",
+      desiredCount: props.desiredCount,
+      cluster,
+      taskDefinition: workerTaskDefinition,
+      vpcSubnets: props.vpcSubnets,
+      securityGroups: props.securityGroups,
+      assignPublicIp: props.assignPublicIp,
+      enableExecuteCommand: props.enableExecuteCommand
+    });
+
+     this.ecsDashboardService = new ecs.FargateService(this, "dashboardFargateService", {
+      serviceName: "ecsDashboardService",
+      desiredCount: props.desiredCount,
+      cluster,
+      taskDefinition: dashboardTaskDefinition,
       vpcSubnets: props.vpcSubnets,
       securityGroups: props.securityGroups,
       assignPublicIp: props.assignPublicIp,
