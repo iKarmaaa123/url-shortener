@@ -1,9 +1,9 @@
-import * as cdk from "aws-cdk-lib"
+import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { IVpc, ISecurityGroup, SubnetSelection } from "aws-cdk-lib/aws-ec2";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 
-interface ALBConstructProps {
+interface ALBConstructProps extends cdk.StackProps {
   loadBalancerName?: string;
   vpc: IVpc;
   internetFacing?: boolean;
@@ -21,7 +21,8 @@ interface ALBConstructProps {
 
 export class ALBConstruct extends Construct {
   public readonly alb: elbv2.ApplicationLoadBalancer;
-  public readonly targetGroup: cdk.aws_elasticloadbalancingv2.ApplicationTargetGroup;
+  public readonly apiTargetGroup: cdk.aws_elasticloadbalancingv2.ApplicationTargetGroup;
+  public readonly dashboardTargetGroup: cdk.aws_elasticloadbalancingv2.ApplicationTargetGroup;
 
   constructor(scope: Construct, id: string, props: ALBConstructProps) {
     super(scope, id);
@@ -34,7 +35,17 @@ export class ALBConstruct extends Construct {
       securityGroup: props.albSecurityGroup,
     });
 
-    this.targetGroup = new elbv2.ApplicationTargetGroup(this, "TG", {
+    this.apiTargetGroup = new elbv2.ApplicationTargetGroup(this, "TG", {
+      vpc: props.vpc,
+      port: props.http_port,
+      protocol: props.http_protocol,
+      healthCheck: props.health_check,
+      targetType: props.targetType,
+      crossZoneEnabled: props.crossZoneEnabled,
+      ipAddressType: props.ipAddressType,
+    });
+
+    this.dashboardTargetGroup = new elbv2.ApplicationTargetGroup(this, "TG", {
       vpc: props.vpc,
       port: props.http_port,
       protocol: props.http_protocol,
@@ -50,7 +61,11 @@ export class ALBConstruct extends Construct {
     });
 
     listener.addTargetGroups("Targets", {
-      targetGroups: [this.targetGroup],
+      targetGroups: [this.apiTargetGroup],
+    });
+
+    listener.addTargetGroups("Targets", {
+      targetGroups: [this.dashboardTargetGroup],
     });
   }
 }
