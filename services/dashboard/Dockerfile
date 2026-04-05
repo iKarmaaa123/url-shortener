@@ -1,25 +1,21 @@
-FROM golang:1.24-alpine AS build
+FROM golang:1.26-alpine AS build
 
 WORKDIR /wd
 
 COPY go.mod .
 
-RUN go mod download
+RUN go mod download all
 
 COPY main.go .
 
-RUN go build -o /main.go
+RUN go build -o app main.go
 
 FROM golang:1.19-alpine
 
-RUN adduser non-root
-
-USER non-root
-
 WORKDIR /app
 
-COPY --from=build /wd .
+COPY --from=build /wd/app .
 
 EXPOSE 8081
 
-CMD ["main.go"]
+CMD ["./app"]
