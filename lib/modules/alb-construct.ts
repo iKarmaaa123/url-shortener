@@ -10,9 +10,7 @@ interface ALBConstructProps extends cdk.StackProps {
   albSecurityGroup: ISecurityGroup;
   vpcSubnets?: SubnetSelection;
   http_port?: number;
-  https_port?: number;
   http_protocol?: elbv2.ApplicationProtocol;
-  https_protocol?: elbv2.ApplicationProtocol;
   targetType?: elbv2.TargetType;
   health_check?: elbv2.HealthCheck;
   crossZoneEnabled?: boolean;
@@ -35,7 +33,7 @@ export class ALBConstruct extends Construct {
       securityGroup: props.albSecurityGroup,
     });
 
-    this.apiTargetGroup = new elbv2.ApplicationTargetGroup(this, "TG", {
+    this.apiTargetGroup = new elbv2.ApplicationTargetGroup(this, "apiTG", {
       vpc: props.vpc,
       port: props.http_port,
       protocol: props.http_protocol,
@@ -45,7 +43,7 @@ export class ALBConstruct extends Construct {
       ipAddressType: props.ipAddressType,
     });
 
-    this.dashboardTargetGroup = new elbv2.ApplicationTargetGroup(this, "TG", {
+    this.dashboardTargetGroup = new elbv2.ApplicationTargetGroup(this, "dashboardTG", {
       vpc: props.vpc,
       port: props.http_port,
       protocol: props.http_protocol,
