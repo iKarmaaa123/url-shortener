@@ -20,8 +20,8 @@ export interface VpcConstructProps {
 
 export class VpcConstruct extends Construct {
   public readonly vpc: ec2.IVpc;
-  public readonly ecsSecurityGroup: ec2.SecurityGroup;
-  public readonly albSecurityGroup: ec2.SecurityGroup;
+  public readonly ecsSecurityGroup: ec2.ISecurityGroup;
+  public readonly albSecurityGroup: ec2.ISecurityGroup;
   public readonly publicSubnets: ec2.SubnetSelection;
   public readonly privateSubnets: ec2.SubnetSelection;
 
@@ -39,10 +39,12 @@ export class VpcConstruct extends Construct {
 
     this.publicSubnets = this.vpc.selectSubnets({
       subnetType: ec2.SubnetType.PUBLIC,
+      subnetGroupName: "ecsPrivateSubnets",
     });
 
     this.privateSubnets = this.vpc.selectSubnets({
       subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      subnetGroupName: "ecsPrivateSubnets"
     });
 
     this.ecsSecurityGroup = new ec2.SecurityGroup(this, "mySecurityGroup", {
@@ -63,8 +65,9 @@ export class VpcConstruct extends Construct {
       serviceRegion: props.serviceRegion,
       ipAddressType: props.ipAddressType,
       privateDnsEnabled: props.privateDnsEnabled,
-      privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint,
-    })
+      privateDnsOnlyForInboundResolverEndpoint:
+        props.privateDnsOnlyForInboundResolverEndpoint,
+    });
 
     this.vpc.addInterfaceEndpoint("ecrVpcInterfaceEndpoint", {
       service: ec2.InterfaceVpcEndpointAwsService.ECR,
@@ -72,8 +75,9 @@ export class VpcConstruct extends Construct {
       serviceRegion: props.serviceRegion,
       ipAddressType: props.ipAddressType,
       privateDnsEnabled: props.privateDnsEnabled,
-      privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint,
-    })
+      privateDnsOnlyForInboundResolverEndpoint:
+        props.privateDnsOnlyForInboundResolverEndpoint,
+    });
 
     this.vpc.addInterfaceEndpoint("cloudWatchVpcInterfaceEndpoint", {
       service: ec2.InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
@@ -81,8 +85,9 @@ export class VpcConstruct extends Construct {
       serviceRegion: props.serviceRegion,
       ipAddressType: props.ipAddressType,
       privateDnsEnabled: props.privateDnsEnabled,
-      privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint
-    })
+      privateDnsOnlyForInboundResolverEndpoint:
+        props.privateDnsOnlyForInboundResolverEndpoint,
+    });
 
     this.vpc.addInterfaceEndpoint("sqsVpcInterfaceEndpoint", {
       service: ec2.InterfaceVpcEndpointAwsService.SQS,
@@ -90,21 +95,33 @@ export class VpcConstruct extends Construct {
       serviceRegion: props.serviceRegion,
       ipAddressType: props.ipAddressType,
       privateDnsEnabled: props.privateDnsEnabled,
-      privateDnsOnlyForInboundResolverEndpoint: props.privateDnsOnlyForInboundResolverEndpoint
-    })
+      privateDnsOnlyForInboundResolverEndpoint:
+        props.privateDnsOnlyForInboundResolverEndpoint,
+    });
+
+    this.vpc.addInterfaceEndpoint("postgresqlVpcInterfaceEndpoint", {
+      service: ec2.InterfaceVpcEndpointAwsService.RDS,
+      subnets: this.privateSubnets,
+      serviceRegion: props.serviceRegion,
+      ipAddressType: props.ipAddressType,
+      privateDnsEnabled: props.privateDnsEnabled,
+      privateDnsOnlyForInboundResolverEndpoint:
+        props.privateDnsOnlyForInboundResolverEndpoint,
+    });
 
     this.vpc.addGatewayEndpoint("dynmaodbVpcGatewayEndpoint", {
       service: ec2.GatewayVpcEndpointAwsService.DYNAMODB,
-      subnets: [this.privateSubnets],        
-    })
-  
+      subnets: [this.privateSubnets],
+    });
+
     this.vpc.addGatewayEndpoint("s3VpcGatewayEndpoint", {
       service: ec2.GatewayVpcEndpointAwsService.S3,
-      subnets: [this.privateSubnets],        
-    })
-    
+      subnets: [this.privateSubnets],
+    });
+
     this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8080));
-    this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(443));
+    this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8081));
+    this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup,ec2.Port.tcp(443));
     this.albSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80));
   }
 }
