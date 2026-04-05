@@ -39,10 +39,9 @@ export class WafContruct extends Construct {
       rules: wafRules,
     });
 
-    const wafAclAssociation: waf.CfnWebACLAssociation =
-      new waf.CfnWebACLAssociation(this, "wafAclAssociation", {
-        webAclArn: customWaf.attrArn,
-        resourceArn: props.resourceArn,
-      });
+    new waf.CfnWebACLAssociation(this, "wafAclAssociation", {
+      webAclArn: customWaf.attrArn,
+      resourceArn: props.resourceArn,
+    });
   }
 }
