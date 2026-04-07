@@ -1,7 +1,7 @@
 import { ITableV2 } from "aws-cdk-lib/aws-dynamodb";
-import { IDatabaseInstance } from "aws-cdk-lib/aws-rds"
-import { IVpc, SubnetSelection, ISecurityGroup } from "aws-cdk-lib/aws-ec2";
-import { IApplicationTargetGroup } from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import { IDatabaseInstance } from "aws-cdk-lib/aws-rds";
+import { IVpc, SubnetSelection, ISecurityGroup, SubnetType } from "aws-cdk-lib/aws-ec2";
+import { IApplicationTargetGroup } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { IQueue } from "aws-cdk-lib/aws-sqs";
@@ -11,19 +11,20 @@ export interface EcsConstructProps {
   clusterName?: string;
   region: string;
   vpc?: IVpc;
+  privateSubnetType: SubnetType;
   vpcSubnets?: SubnetSelection;
   securityGroups?: ISecurityGroup[];
   enableFargateCapacityProviders?: boolean;
   executionRoleName?: string;
   dynamodbTable: ITableV2;
   sqsQueue: IQueue;
-  postgresql: IDatabaseInstance,
+  postgresql: IDatabaseInstance;
   desiredCount?: number;
   memoryLimitMiB?: number;
   cpu?: number;
   assignPublicIp?: boolean;
   enableExecuteCommand?: boolean;
-  targetGroup?: IApplicationTargetGroup
+  targetGroup?: IApplicationTargetGroup;
 }
 
 export class EcsConstruct extends Construct {
@@ -73,28 +74,42 @@ export class EcsConstruct extends Construct {
       enableFargateCapacityProviders: props.enableFargateCapacityProviders,
     });
 
-    const apiTaskDefinition = new ecs.FargateTaskDefinition(this, "apiTaskDefinition", {
-      memoryLimitMiB: props.memoryLimitMiB,
-      cpu: props.cpu,
-      executionRole: executionRole,
-      taskRole: apiTaskRole,
-    });
+    const apiTaskDefinition = new ecs.FargateTaskDefinition(
+      this,
+      "apiTaskDefinition",
+      {
+        memoryLimitMiB: props.memoryLimitMiB,
+        cpu: props.cpu,
+        executionRole: executionRole,
+        taskRole: apiTaskRole,
+      },
+    );
 
-    const workerTaskDefinition = new ecs.FargateTaskDefinition(this, "workerTaskDefinition", {
-      memoryLimitMiB: props.memoryLimitMiB,
-      cpu: props.cpu,
-      executionRole: executionRole,
-      taskRole: workerTaskRole,
-    });
+    const workerTaskDefinition = new ecs.FargateTaskDefinition(
+      this,
+      "workerTaskDefinition",
+      {
+        memoryLimitMiB: props.memoryLimitMiB,
+        cpu: props.cpu,
+        executionRole: executionRole,
+        taskRole: workerTaskRole,
+      },
+    );
 
-    const dashboardTaskDefinition = new ecs.FargateTaskDefinition(this, "dashboardTaskDefinition", {
-      memoryLimitMiB: props.memoryLimitMiB,
-      cpu: props.cpu,
-      executionRole: executionRole,
-    });
+    const dashboardTaskDefinition = new ecs.FargateTaskDefinition(
+      this,
+      "dashboardTaskDefinition",
+      {
+        memoryLimitMiB: props.memoryLimitMiB,
+        cpu: props.cpu,
+        executionRole: executionRole,
+      },
+    );
 
     apiTaskDefinition.addContainer("web", {
-      image: ecs.ContainerImage.fromRegistry(""),
+      image: ecs.ContainerImage.fromRegistry(
+        "648767092427.dkr.ecr.us-east-1.amazonaws.com/api-repository",
+      ),
       environment: {
         TABLE_NAME: props.dynamodbTable.tableName,
         AWS_REGION: props.region,
@@ -108,7 +123,9 @@ export class EcsConstruct extends Construct {
     });
 
     workerTaskDefinition.addContainer("web", {
-      image: ecs.ContainerImage.fromRegistry(""),
+      image: ecs.ContainerImage.fromRegistry(
+        "648767092427.dkr.ecr.us-east-1.amazonaws.com/worker-repository",
+      ),
       environment: {
         SQS_QUEUE_URL: props.sqsQueue.queueUrl,
         DATABASE_URL: props.postgresql.dbInstanceEndpointAddress,
@@ -117,7 +134,9 @@ export class EcsConstruct extends Construct {
     });
 
     dashboardTaskDefinition.addContainer("web", {
-      image: ecs.ContainerImage.fromRegistry(""),
+      image: ecs.ContainerImage.fromRegistry(
+        "648767092427.dkr.ecr.us-east-1.amazonaws.com/dashboard-repository",
+      ),
       environment: {
         DATABASE_URL: props.postgresql.dbInstanceEndpointAddress,
       },
@@ -134,32 +153,46 @@ export class EcsConstruct extends Construct {
       desiredCount: props.desiredCount,
       cluster,
       taskDefinition: apiTaskDefinition,
-      vpcSubnets: props.vpcSubnets,
+      vpcSubnets: {
+        subnetType: props.privateSubnetType,
+      },
       securityGroups: props.securityGroups,
       assignPublicIp: props.assignPublicIp,
       enableExecuteCommand: props.enableExecuteCommand,
     });
 
-    this.ecsWorkerService = new ecs.FargateService(this, "workerFargateService", {
-      serviceName: "ecsWorkerService",
-      desiredCount: props.desiredCount,
-      cluster,
-      taskDefinition: workerTaskDefinition,
-      vpcSubnets: props.vpcSubnets,
-      securityGroups: props.securityGroups,
-      assignPublicIp: props.assignPublicIp,
-      enableExecuteCommand: props.enableExecuteCommand,
-    });
+    this.ecsWorkerService = new ecs.FargateService(
+      this,
+      "workerFargateService",
+      {
+        serviceName: "ecsWorkerService",
+        desiredCount: props.desiredCount,
+        cluster,
+        taskDefinition: workerTaskDefinition,
+        vpcSubnets: {
+          subnetType: props.privateSubnetType,
+        },
+        securityGroups: props.securityGroups,
+        assignPublicIp: props.assignPublicIp,
+        enableExecuteCommand: props.enableExecuteCommand,
+      },
+    );
 
-    this.ecsDashboardService = new ecs.FargateService(this, "dashboardFargateService", {
-      serviceName: "ecsDashboardService",
-      desiredCount: props.desiredCount,
-      cluster,
-      taskDefinition: dashboardTaskDefinition,
-      vpcSubnets: props.vpcSubnets,
-      securityGroups: props.securityGroups,
-      assignPublicIp: props.assignPublicIp,
-      enableExecuteCommand: props.enableExecuteCommand,
-    });
+    this.ecsDashboardService = new ecs.FargateService(
+      this,
+      "dashboardFargateService",
+      {
+        serviceName: "ecsDashboardService",
+        desiredCount: props.desiredCount,
+        cluster,
+        taskDefinition: dashboardTaskDefinition,
+        vpcSubnets: {
+          subnetType: props.privateSubnetType,
+        },
+        securityGroups: props.securityGroups,
+        assignPublicIp: props.assignPublicIp,
+        enableExecuteCommand: props.enableExecuteCommand,
+      },
+    );
   }
 }
