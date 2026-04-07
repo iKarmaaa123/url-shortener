@@ -1,49 +1,41 @@
-import * as cdk from "aws-cdk-lib";
+import { Duration } from "aws-cdk-lib/core";
 import { Stack } from "aws-cdk-lib/core";
 import { Construct } from "constructs";
 import { EcsConstruct } from "./modules/ecs-construct";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { VpcConstruct } from "./modules/vpc-construct";
 import { DynamoDBConstruct } from "./modules/dynamodb-construct";
 import { ALBConstruct } from "./modules/alb-construct";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { WafContruct } from "./modules/waf-construct";
+import { SqsConstruct } from "./modules/sqs-construct";
+import { ProgresqlDatabaseConstruct } from "./modules/postgresql-construct";
+import { ElastiCacheRedis, Engine } from "./modules/elasticacheredis-construct";
+import * as rds from "aws-cdk-lib/aws-rds";
 
 export class EcsStack extends Stack {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    const ecsVpc = new VpcConstruct(this, "vpc", {
+    const vpc = new VpcConstruct(this, "vpc", {
       vpcName: "ecs-vpc",
       ipAddresses: ec2.IpAddresses.cidr("10.0.0.0/16"),
-      subnetConfiguration: [
-        {
-          cidrMask: 24,
-          name: "ecs-public-subnets",
-          subnetType: ec2.SubnetType.PUBLIC,
-        },
-        {
-          cidrMask: 24,
-          name: "ecs-private-subnets",
-          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-        },
-      ],
-      availabilityZones: ["us-east-1a", "us-east-1b"],
+      cidrMask: 24,
+      publicSubnetName: "ecsPublicSubnets",
+      privateSubnetName: "ecsPrivateSubnets",    
+      publicSubnetType: ec2.SubnetType.PUBLIC,
+      privateSubnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"],
       createInternetGateway: true,
       ecsSecurityGroupName: "ecs-security-group",
       albSecurityGroupName: "alb-security-group",
       allowAllOutbound: true,
       natGateways: 0,
-      serviceRegion: "us-east-1",
+      serviceRegion: this.region,
       ipAddressType: ec2.VpcEndpointIpAddressType.IPV4,
       privateDnsEnabled: true,
-      vpcInterfaceEndpointServiceECR: ec2.InterfaceVpcEndpointAwsService.ECR,
-      vpcInterfaceEndpointServiceECRDocker: ec2.InterfaceVpcEndpointAwsService.ECR_DOCKER,
-      vpcInterfaceEndpointServiceCloudWatch: ec2.InterfaceVpcEndpointAwsService.CLOUDWATCH_LOGS,
-      vpcGatewayEndpointServiceDynamodb: ec2.GatewayVpcEndpointAwsService.DYNAMODB,
-      vpcGatewayEndpointServiceS3: ec2.GatewayVpcEndpointAwsService.S3
+      onePerAz: this.availabilityZones.length > 1,
     });
 
     const dynamodbConstruct = new DynamoDBConstruct(this, "dynamodb", {
@@ -55,49 +47,62 @@ export class EcsStack extends Stack {
       },
     });
 
+    const sqsQueue = new SqsConstruct(this, "sqs", {
+      queueName: "ecsV2EcsProjectSqsQueue",
+      visibilityTimeout: Duration.seconds(10),
+      receiveMessageWaitTime: Duration.seconds(20),
+    });
+
+    const postgresqlDatabase = new ProgresqlDatabaseConstruct(
+      this,
+      "postgresDatabase",
+      {
+        databaseName: "postgresqlDatabase",
+        vpc: vpc.vpc,
+        vpcSubnets: {
+          subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+        },
+        multiAz: vpc.vpc.availabilityZones.length > 1,
+        securityGroups: vpc.ecsSecurityGroup,
+        allocatedStorage: 20,
+        maxAllocatedStorage: 100,
+        storageType: rds.StorageType.GP3,
+        storageEncrypted: true,
+        backupRetention: Duration.days(7),
+        monitoringInterval: Duration.seconds(20),
+        secretName: "postgresql-secret",
+      },
+    );
+
     const ecsConstruct = new EcsConstruct(this, "ecs", {
       clusterName: "my-ecsv2-cluster",
-      vpc: ecsVpc.vpc,
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-      },
-      securityGroups: [ecsVpc.ecsSecurityGroup],
+      vpc: vpc.vpc,
+      privateSubnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      region: this.region,
+      securityGroups: [vpc.ecsSecurityGroup],
       enableFargateCapacityProviders: true,
       executionRoleName: "ecsv2-url-shortener-execution-role",
-      taskRoleName: "ecsv2-url-shortener-task-role",
-      serviceName: "url-shortener-ecsv2-service",
       desiredCount: 2,
       memoryLimitMiB: 512,
       cpu: 256,
-      image: ecs.ContainerImage.fromRegistry(
-        "648767092427.dkr.ecr.us-east-1.amazonaws.com/url-shortener:latest",
-      ),
-      actions: ["*"],
-      resources: [dynamodbConstruct.dynamoDBTable.tableArn],
-      environment: {
-        TABLE_NAME: "url-shortener-table",
-        AWS_REGION: "us-east-1",
-      },
-      portMappings: [
-        {
-          containerPort: 8080,
-        },
-      ],
+      dynamodbTable: dynamodbConstruct.dynamoDBTable,
+      sqsQueue: sqsQueue.sqsQueue,
+      postgresql: postgresqlDatabase.database,
       assignPublicIp: false,
-      enableExecuteCommand: true
+      enableExecuteCommand: true,
     });
 
     const albConstruct = new ALBConstruct(this, "alb", {
       loadBalancerName: "ecsv2-loadbalncer",
-      vpc: ecsVpc.vpc,
+      vpc: vpc.vpc,
       vpcSubnets: {
         subnetType: ec2.SubnetType.PUBLIC,
       },
       internetFacing: true,
-      albSecurityGroup: ecsVpc.albSecurityGroup,
+      albSecurityGroup: vpc.albSecurityGroup,
       health_check: {
         path: "/healthz",
-        interval: cdk.Duration.seconds(30),
+        interval: Duration.seconds(30),
       },
       targetType: elbv2.TargetType.IP,
       crossZoneEnabled: true,
@@ -106,7 +111,13 @@ export class EcsStack extends Stack {
       http_protocol: elbv2.ApplicationProtocol.HTTP,
     });
 
-    ecsConstruct.ecsService.attachToApplicationTargetGroup(albConstruct.targetGroup)
+    ecsConstruct.ecsApiService.attachToApplicationTargetGroup(
+      albConstruct.apiTargetGroup,
+    );
+
+    ecsConstruct.ecsDashboardService.attachToApplicationTargetGroup(
+      albConstruct.dashboardTargetGroup,
+    );
 
     new WafContruct(this, "waf", {
       block: {
@@ -131,7 +142,17 @@ export class EcsStack extends Stack {
           countryCodes: ["US", "GB"],
         },
       },
-      resourceArn: albConstruct.alb.loadBalancerArn
+      resourceArn: albConstruct.alb.loadBalancerArn,
+    });
+
+    new ElastiCacheRedis(this, "elasticCacheRedis", {
+      clusterName: "elasticCacheRedis",
+      cacheNodeType: "cache.t4g.micro",
+      engine: Engine.redis,
+      autoMinorVersionUpgrade: true,
+      networkType: "ipv4",
+      cacheSubnetGroupName: vpc.privateSubnets.subnetGroupName,
+      vpcSecurityGroupIds: [vpc.ecsSecurityGroup.securityGroupId],
     });
   }
 }
