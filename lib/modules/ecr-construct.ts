@@ -1,4 +1,4 @@
-import * as cdk from "aws-cdk-lib";
+import { RemovalPolicy } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 
@@ -14,6 +14,9 @@ export class EcrConstruct extends Construct {
     new ecr.Repository(this, "apiEcrRepo", {
       repositoryName: props.repositoryName,
       emptyOnDelete: props.emptyOnDelete,
+      removalPolicy: props.emptyOnDelete
+        ? RemovalPolicy.DESTROY
+        : RemovalPolicy.RETAIN,
     });
   }
 }
