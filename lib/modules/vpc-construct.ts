@@ -1,11 +1,18 @@
 import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
+import { SubnetGroup } from "aws-cdk-lib/aws-rds";
 
 export interface VpcConstructProps {
   vpcName?: string;
   ipAddresses?: ec2.IIpAddresses;
   availabilityZones?: string[];
+  onePerAz: boolean;
   subnetConfiguration?: ec2.SubnetConfiguration[];
+  cidrMask?: number;
+  publicSubnetName: string;
+  privateSubnetName: string;
+  publicSubnetType: ec2.SubnetType;
+  privateSubnetType: ec2.SubnetType;
   createInternetGateway?: boolean;
   ecsSecurityGroupName?: string;
   albSecurityGroupName?: string;
@@ -24,6 +31,7 @@ export class VpcConstruct extends Construct {
   public readonly albSecurityGroup: ec2.ISecurityGroup;
   public readonly publicSubnets: ec2.SubnetSelection;
   public readonly privateSubnets: ec2.SubnetSelection;
+  public readonly privateSubnetGroup: SubnetGroup;
 
   constructor(scope: Construct, id: string, props: VpcConstructProps) {
     super(scope, id);
@@ -34,17 +42,26 @@ export class VpcConstruct extends Construct {
       createInternetGateway: props.createInternetGateway,
       availabilityZones: props.availabilityZones,
       natGateways: props.natGateways,
-      subnetConfiguration: props.subnetConfiguration,
+      subnetConfiguration: [
+        {
+          cidrMask: props.cidrMask,
+          name: props.publicSubnetName,
+          subnetType: props.publicSubnetType,
+        },
+        {
+          cidrMask: props.cidrMask,
+          name: props.privateSubnetName,
+          subnetType: props.privateSubnetType,
+        },
+      ],
     });
 
     this.publicSubnets = this.vpc.selectSubnets({
-      subnetType: ec2.SubnetType.PUBLIC,
-      subnetGroupName: "ecsPrivateSubnets",
+      subnetType: props.publicSubnetType,
     });
 
     this.privateSubnets = this.vpc.selectSubnets({
-      subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-      subnetGroupName: "ecsPrivateSubnets"
+      subnetType: props.privateSubnetType,
     });
 
     this.ecsSecurityGroup = new ec2.SecurityGroup(this, "mySecurityGroup", {
@@ -119,9 +136,18 @@ export class VpcConstruct extends Construct {
       subnets: [this.privateSubnets],
     });
 
-    this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8080));
-    this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8081));
-    this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup,ec2.Port.tcp(443));
+    this.ecsSecurityGroup.addIngressRule(
+      this.albSecurityGroup,
+      ec2.Port.tcp(8080),
+    );
+    this.ecsSecurityGroup.addIngressRule(
+      this.albSecurityGroup,
+      ec2.Port.tcp(8081),
+    );
+    this.ecsSecurityGroup.addIngressRule(
+      this.albSecurityGroup,
+      ec2.Port.tcp(443),
+    );
     this.albSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80));
   }
 }
