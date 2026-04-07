@@ -9,18 +9,18 @@ export interface Postgresqlprops {
   vpcSubnets: SubnetSelection;
   securityGroups: ISecurityGroup;
   databaseName?: string;
-  allocatedStorage?: number
-  maxAllocatedStorage?: number
-  storageType?: cdk.aws_rds.StorageType 
-  storageEncrypted: boolean
+  allocatedStorage?: number;
+  maxAllocatedStorage?: number;
+  storageType?: cdk.aws_rds.StorageType;
+  storageEncrypted: boolean;
   multiAz?: boolean;
-  backupRetention?: cdk.Duration
-  monitoringInterval?: cdk.Duration
-  secretName?: string
+  backupRetention?: cdk.Duration;
+  monitoringInterval?: cdk.Duration;
+  secretName?: string;
 }
 
 export class ProgresqlDatabaseConstruct extends Construct {
-  public readonly database: cdk.aws_rds.DatabaseInstance
+  public readonly database: cdk.aws_rds.DatabaseInstance;
 
   constructor(scope: Construct, id: string, props: Postgresqlprops) {
     super(scope, id);
