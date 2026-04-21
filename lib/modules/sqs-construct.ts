@@ -3,9 +3,9 @@ import * as sqs from "aws-cdk-lib/aws-sqs";
 import { Construct } from "constructs";
 
 export interface SqsConstructProps {
-  queueName: string;
-  receiveMessageWaitTime: cdk.Duration;
-  visibilityTimeout: cdk.Duration;
+  queueName?: string;
+  receiveMessageWaitTime?: cdk.Duration;
+  visibilityTimeout?: cdk.Duration;
 }
 
 export class SqsConstruct extends Construct {
