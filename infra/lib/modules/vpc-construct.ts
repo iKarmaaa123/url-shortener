@@ -1,6 +1,6 @@
 import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import { SubnetGroup } from "aws-cdk-lib/aws-rds";
+import { aws_elasticache as elasticache } from 'aws-cdk-lib';
 
 export interface VpcConstructProps {
   vpcName?: string;
@@ -13,6 +13,7 @@ export interface VpcConstructProps {
   privateSubnetName: string;
   publicSubnetType: ec2.SubnetType;
   privateSubnetType: ec2.SubnetType;
+  description: string;
   createInternetGateway?: boolean;
   ecsSecurityGroupName?: string;
   albSecurityGroupName?: string;
@@ -29,9 +30,9 @@ export class VpcConstruct extends Construct {
   public readonly vpc: ec2.IVpc;
   public readonly ecsSecurityGroup: ec2.ISecurityGroup;
   public readonly albSecurityGroup: ec2.ISecurityGroup;
-  public readonly publicSubnets: ec2.SubnetSelection;
-  public readonly privateSubnets: ec2.SubnetSelection;
-  public readonly privateSubnetGroup: SubnetGroup;
+  public readonly publicSubnets: ec2.SelectedSubnets;
+  public readonly privateSubnets: ec2.SelectedSubnets;
+  public readonly privateSubnetGroup: elasticache.CfnSubnetGroup;
 
   constructor(scope: Construct, id: string, props: VpcConstructProps) {
     super(scope, id);
@@ -62,6 +63,11 @@ export class VpcConstruct extends Construct {
 
     this.privateSubnets = this.vpc.selectSubnets({
       subnetType: props.privateSubnetType,
+    });
+
+    this.privateSubnetGroup = new elasticache.CfnSubnetGroup(this, 'MyCfnSubnetGroup', {
+      description: props.description,
+      subnetIds: this.privateSubnets.subnetIds,
     });
 
     this.ecsSecurityGroup = new ec2.SecurityGroup(this, "mySecurityGroup", {
@@ -126,6 +132,16 @@ export class VpcConstruct extends Construct {
         props.privateDnsOnlyForInboundResolverEndpoint,
     });
 
+    this.vpc.addInterfaceEndpoint("secretsManagerVpcInterfaceEndpoint", {
+      service: ec2.InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
+      subnets: this.privateSubnets,
+      serviceRegion: props.serviceRegion,
+      ipAddressType: props.ipAddressType,
+      privateDnsEnabled: props.privateDnsEnabled,
+      privateDnsOnlyForInboundResolverEndpoint:
+        props.privateDnsOnlyForInboundResolverEndpoint,
+    });
+
     this.vpc.addGatewayEndpoint("dynmaodbVpcGatewayEndpoint", {
       service: ec2.GatewayVpcEndpointAwsService.DYNAMODB,
       subnets: [this.privateSubnets],
@@ -136,18 +152,9 @@ export class VpcConstruct extends Construct {
       subnets: [this.privateSubnets],
     });
 
-    this.ecsSecurityGroup.addIngressRule(
-      this.albSecurityGroup,
-      ec2.Port.tcp(8080),
-    );
-    this.ecsSecurityGroup.addIngressRule(
-      this.albSecurityGroup,
-      ec2.Port.tcp(8081),
-    );
-    this.ecsSecurityGroup.addIngressRule(
-      this.albSecurityGroup,
-      ec2.Port.tcp(443),
-    );
+    this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8080));
+    this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8081));
+    this.ecsSecurityGroup.addIngressRule(this.ecsSecurityGroup, ec2.Port.tcp(5432));
     this.albSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80));
   }
 }

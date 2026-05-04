@@ -14,9 +14,7 @@ export class EcrConstruct extends Construct {
     new ecr.Repository(this, "apiEcrRepo", {
       repositoryName: props.repositoryName,
       emptyOnDelete: props.emptyOnDelete,
-      removalPolicy: props.emptyOnDelete
-        ? RemovalPolicy.DESTROY
-        : RemovalPolicy.RETAIN,
+      removalPolicy: props.emptyOnDelete ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN,
     });
   }
 }

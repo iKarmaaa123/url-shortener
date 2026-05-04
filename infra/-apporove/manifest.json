@@ -1,0 +1,2693 @@
+{
+  "version": "48.0.0",
+  "artifacts": {
+    "ecsStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ecsStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ecsStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ecsStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/81ad4391f562df7c863949920cd0bf767a778072de864e6c6184a2363cdfe2a5.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ecsStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ecsStack.assets"
+      ],
+      "metadata": {
+        "/ecsStack/vpc/vpc": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "ipAddresses": "*",
+              "vpcName": "*",
+              "createInternetGateway": true,
+              "availabilityZones": "*",
+              "natGateways": "*",
+              "subnetConfiguration": [
+                {
+                  "cidrMask": "*",
+                  "name": "*",
+                  "subnetType": "Public"
+                },
+                {
+                  "cidrMask": "*",
+                  "name": "*",
+                  "subnetType": "Private"
+                }
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpc4346410E"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet1": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {}
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet1SubnetCDF7A200"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet1RouteTable054F1291"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet1RouteTableAssociation638EFE8C"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet1DefaultRoute356B6063"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet2": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {}
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet2Subnet136C6BB0"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet2RouteTableC61B1CAD"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet2RouteTableAssociation94A2E230"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet2DefaultRouteCB03A47E"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet3": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {}
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet3/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet3Subnet9D1AAC45"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet3/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet3RouteTable45E41E51"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet3/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet3RouteTableAssociation53CAEE2E"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPublicSubnetsSubnet3/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPublicSubnetsSubnet3DefaultRouteBE1DCCBA"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet1": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet1SubnetA9CD66AD"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet1RouteTable704644AB"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet1RouteTableAssociation30C7A00D"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet2": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet2Subnet074A260F"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet2RouteTable98A32EA1"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet2RouteTableAssociation07EC599E"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet3": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet3/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet3SubnetEF4356EC"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet3/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet3RouteTable255103B6"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecsPrivateSubnetsSubnet3/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecsPrivateSubnetsSubnet3RouteTableAssociationA33F710C"
+          }
+        ],
+        "/ecsStack/vpc/vpc/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcIGW306FFF7E"
+          }
+        ],
+        "/ecsStack/vpc/vpc/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcVPCGW5B2F0729"
+          }
+        ],
+        "/ecsStack/vpc/vpc/RestrictDefaultSecurityGroupCustomResource": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/vpc/vpc/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcRestrictDefaultSecurityGroupCustomResourceC4F037F5"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecrDockerVpcInterfaceEndpoint": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "service": {
+                "name": "*",
+                "port": "*",
+                "privateDnsDefault": true
+              },
+              "subnets": {
+                "availabilityZones": "*",
+                "subnets": [
+                  "*",
+                  "*",
+                  "*"
+                ]
+              },
+              "serviceRegion": "*",
+              "ipAddressType": "ipv4",
+              "privateDnsEnabled": true,
+              "privateDnsOnlyForInboundResolverEndpoint": "*"
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecrDockerVpcInterfaceEndpoint/SecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                {
+                  "canInlineRule": true,
+                  "connections": "*",
+                  "uniqueId": "*"
+                },
+                {},
+                "*",
+                false
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecrDockerVpcInterfaceEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecrDockerVpcInterfaceEndpointSecurityGroupBFC9D016"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecrDockerVpcInterfaceEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecrDockerVpcInterfaceEndpoint43215AA8"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecrVpcInterfaceEndpoint": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "service": {
+                "name": "*",
+                "port": "*",
+                "privateDnsDefault": true
+              },
+              "subnets": {
+                "availabilityZones": "*",
+                "subnets": [
+                  "*",
+                  "*",
+                  "*"
+                ]
+              },
+              "serviceRegion": "*",
+              "ipAddressType": "ipv4",
+              "privateDnsEnabled": true,
+              "privateDnsOnlyForInboundResolverEndpoint": "*"
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecrVpcInterfaceEndpoint/SecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                {
+                  "canInlineRule": true,
+                  "connections": "*",
+                  "uniqueId": "*"
+                },
+                {},
+                "*",
+                false
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecrVpcInterfaceEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecrVpcInterfaceEndpointSecurityGroupFAC21127"
+          }
+        ],
+        "/ecsStack/vpc/vpc/ecrVpcInterfaceEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcecrVpcInterfaceEndpoint2C296EC8"
+          }
+        ],
+        "/ecsStack/vpc/vpc/cloudWatchVpcInterfaceEndpoint": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "service": {
+                "name": "*",
+                "port": "*",
+                "privateDnsDefault": true
+              },
+              "subnets": {
+                "availabilityZones": "*",
+                "subnets": [
+                  "*",
+                  "*",
+                  "*"
+                ]
+              },
+              "serviceRegion": "*",
+              "ipAddressType": "ipv4",
+              "privateDnsEnabled": true,
+              "privateDnsOnlyForInboundResolverEndpoint": "*"
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/cloudWatchVpcInterfaceEndpoint/SecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                {
+                  "canInlineRule": true,
+                  "connections": "*",
+                  "uniqueId": "*"
+                },
+                {},
+                "*",
+                false
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/cloudWatchVpcInterfaceEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpccloudWatchVpcInterfaceEndpointSecurityGroupBE9FA54D"
+          }
+        ],
+        "/ecsStack/vpc/vpc/cloudWatchVpcInterfaceEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpccloudWatchVpcInterfaceEndpointDF5AECDA"
+          }
+        ],
+        "/ecsStack/vpc/vpc/sqsVpcInterfaceEndpoint": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "service": {
+                "name": "*",
+                "port": "*",
+                "privateDnsDefault": true
+              },
+              "subnets": {
+                "availabilityZones": "*",
+                "subnets": [
+                  "*",
+                  "*",
+                  "*"
+                ]
+              },
+              "serviceRegion": "*",
+              "ipAddressType": "ipv4",
+              "privateDnsEnabled": true,
+              "privateDnsOnlyForInboundResolverEndpoint": "*"
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/sqsVpcInterfaceEndpoint/SecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                {
+                  "canInlineRule": true,
+                  "connections": "*",
+                  "uniqueId": "*"
+                },
+                {},
+                "*",
+                false
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/sqsVpcInterfaceEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcsqsVpcInterfaceEndpointSecurityGroupC67B5FF2"
+          }
+        ],
+        "/ecsStack/vpc/vpc/sqsVpcInterfaceEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcsqsVpcInterfaceEndpoint95199D05"
+          }
+        ],
+        "/ecsStack/vpc/vpc/postgresqlVpcInterfaceEndpoint": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "service": {
+                "name": "*",
+                "port": "*",
+                "privateDnsDefault": true
+              },
+              "subnets": {
+                "availabilityZones": "*",
+                "subnets": [
+                  "*",
+                  "*",
+                  "*"
+                ]
+              },
+              "serviceRegion": "*",
+              "ipAddressType": "ipv4",
+              "privateDnsEnabled": true,
+              "privateDnsOnlyForInboundResolverEndpoint": "*"
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/postgresqlVpcInterfaceEndpoint/SecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                {
+                  "canInlineRule": true,
+                  "connections": "*",
+                  "uniqueId": "*"
+                },
+                {},
+                "*",
+                false
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/postgresqlVpcInterfaceEndpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcpostgresqlVpcInterfaceEndpointSecurityGroupB81432E8"
+          }
+        ],
+        "/ecsStack/vpc/vpc/postgresqlVpcInterfaceEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcpostgresqlVpcInterfaceEndpoint9600004A"
+          }
+        ],
+        "/ecsStack/vpc/vpc/dynmaodbVpcGatewayEndpoint": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "service": {
+                "name": "*"
+              },
+              "subnets": [
+                {
+                  "availabilityZones": "*",
+                  "subnets": [
+                    "*",
+                    "*",
+                    "*"
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/dynmaodbVpcGatewayEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcdynmaodbVpcGatewayEndpointFDAA9D2B"
+          }
+        ],
+        "/ecsStack/vpc/vpc/s3VpcGatewayEndpoint": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "service": {
+                "name": "*"
+              },
+              "subnets": [
+                {
+                  "availabilityZones": "*",
+                  "subnets": [
+                    "*",
+                    "*",
+                    "*"
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/vpc/s3VpcGatewayEndpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcs3VpcGatewayEndpoint88483D93"
+          }
+        ],
+        "/ecsStack/vpc/mySecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "securityGroupName": "*",
+              "allowAllOutbound": true
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                "*",
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                "*",
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                "*",
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                "*",
+                {},
+                "*",
+                false
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                "*",
+                {},
+                "*",
+                false
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/mySecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcmySecurityGroup7E393282"
+          }
+        ],
+        "/ecsStack/vpc/mySecurityGroup/from ecsStackvpcmyalbSecurityGroup0786836B:8080": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcmySecurityGroupfromecsStackvpcmyalbSecurityGroup0786836B80801CC957EF"
+          }
+        ],
+        "/ecsStack/vpc/mySecurityGroup/from ecsStackvpcmyalbSecurityGroup0786836B:8081": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcmySecurityGroupfromecsStackvpcmyalbSecurityGroup0786836B8081A28A09C1"
+          }
+        ],
+        "/ecsStack/vpc/mySecurityGroup/from ecsStackvpcmyalbSecurityGroup0786836B:443": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcmySecurityGroupfromecsStackvpcmyalbSecurityGroup0786836B4430D1D70A9"
+          }
+        ],
+        "/ecsStack/vpc/myalbSecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "securityGroupName": "*",
+              "allowAllOutbound": true
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                {
+                  "canInlineRule": true,
+                  "connections": "*",
+                  "uniqueId": "*"
+                },
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                {
+                  "canInlineRule": true,
+                  "connections": "*",
+                  "uniqueId": "*"
+                },
+                {},
+                "*",
+                false
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEgressRule": [
+                "*",
+                {},
+                "*",
+                true
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEgressRule": [
+                "*",
+                {},
+                "*",
+                true
+              ]
+            }
+          }
+        ],
+        "/ecsStack/vpc/myalbSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "vpcmyalbSecurityGroup03932D11"
+          }
+        ],
+        "/ecsStack/Custom::VpcRestrictDefaultSGCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/ecsStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+          }
+        ],
+        "/ecsStack/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+          }
+        ],
+        "/ecsStack/dynamodb/Table": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "tableName": "*",
+              "partitionKey": {
+                "name": "*",
+                "type": "S"
+              },
+              "billing": "*",
+              "pointInTimeRecoverySpecification": {
+                "pointInTimeRecoveryEnabled": true
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "dynamodbTable34E6FD70"
+            }
+          }
+        ],
+        "/ecsStack/dynamodb/Table/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "dynamodbTable34E6FD70"
+          }
+        ],
+        "/ecsStack/sqs/sqsQueue": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "queueName": "*",
+              "receiveMessageWaitTime": "*",
+              "visibilityTimeout": "*"
+            }
+          }
+        ],
+        "/ecsStack/sqs/sqsQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "sqssqsQueueFA5F5127"
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "engine": {
+                "engineType": "*",
+                "engineVersion": {
+                  "fullVersion": "*",
+                  "majorVersion": "*"
+                },
+                "parameterGroupFamily": "*",
+                "singleUserRotationApplication": "*",
+                "engineFamily": "*",
+                "supportsReadReplicaBackups": "*",
+                "defaultUsername": "*"
+              },
+              "instanceType": "*",
+              "vpc": "*",
+              "vpcSubnets": {
+                "subnetType": "Private"
+              },
+              "securityGroups": [
+                "*"
+              ],
+              "databaseName": "*",
+              "port": "*",
+              "credentials": "*",
+              "allocatedStorage": "*",
+              "maxAllocatedStorage": "*",
+              "storageType": "gp3",
+              "storageEncrypted": true,
+              "multiAz": true,
+              "backupRetention": "*",
+              "monitoringInterval": "*"
+            }
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/SubnetGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "description": "*",
+              "vpc": "*",
+              "vpcSubnets": {
+                "subnetType": "Private"
+              },
+              "removalPolicy": "*"
+            }
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "postgresDatabasePostgresDbSubnetGroup2CEF9FF5"
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/MonitoringRole": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Failed to add construct metadata for node [MonitoringRole]. Reason: ValidationError: The result of fromAwsManagedPolicyName can not be used in this API [ack: @aws-cdk/core:addConstructMetadataFailed]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "addConstructMetadata (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\metadata-resource.js:1:1490)",
+              "new Role2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-iam\\lib\\role.js:1:12084)",
+              "new Role2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "new DatabaseInstanceNew (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-rds\\lib\\instance.js:1:10682)",
+              "new DatabaseInstanceSource (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-rds\\lib\\instance.js:1:15641)",
+              "new DatabaseInstance2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-rds\\lib\\instance.js:1:20205)",
+              "new DatabaseInstance2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "new ProgresqlDatabaseConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\postgresql-construct.ts:28:21)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:56:32)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/MonitoringRole/ImportMonitoringRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/MonitoringRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "postgresDatabasePostgresDbMonitoringRole67156A27"
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/Secret": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "encryptionKey": "*",
+              "secretName": "*",
+              "replicaRegions": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "username": "*",
+              "secretName": "*",
+              "encryptionKey": "*",
+              "excludeCharacters": "*",
+              "replaceOnPasswordCriteriaChanges": true,
+              "replicaRegions": "*"
+            }
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsStackpostgresDatabasePostgresDbSecretCDC857873fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/Secret/Attachment": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "secret": "*",
+              "target": "*"
+            }
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "postgresDatabasePostgresDbSecretAttachment26BC7FE5"
+          }
+        ],
+        "/ecsStack/postgresDatabase/PostgresDb/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "postgresDatabasePostgresDb249CCB61"
+          }
+        ],
+        "/ecsStack/ecs/executionRole": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Failed to add construct metadata for node [executionRole]. Reason: ValidationError: The result of fromAwsManagedPolicyName can not be used in this API [ack: @aws-cdk/core:addConstructMetadataFailed]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "addConstructMetadata (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\metadata-resource.js:1:1490)",
+              "new Role2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-iam\\lib\\role.js:1:12084)",
+              "new Role2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "new EcsConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\ecs-construct.ts:38:27)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:77:17)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/ecsStack/ecs/executionRole/ImportexecutionRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/executionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsexecutionRoleFD1C68DA"
+          }
+        ],
+        "/ecsStack/ecs/executionRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/ecsStack/ecs/executionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsexecutionRoleDefaultPolicy9C44E8BA"
+          }
+        ],
+        "/ecsStack/ecs/apiTaskRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "roleName": "*",
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/ecsStack/ecs/apiTaskRole/ImportapiTaskRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/apiTaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsapiTaskRole509A8038"
+          }
+        ],
+        "/ecsStack/ecs/apiTaskRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/ecsStack/ecs/apiTaskRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsapiTaskRoleDefaultPolicyFBACC116"
+          }
+        ],
+        "/ecsStack/ecs/workerTaskRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "roleName": "*",
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/ecsStack/ecs/workerTaskRole/ImportworkerTaskRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/workerTaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsworkerTaskRole37196B79"
+          }
+        ],
+        "/ecsStack/ecs/workerTaskRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/ecsStack/ecs/workerTaskRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsworkerTaskRoleDefaultPolicy878CCB9F"
+          }
+        ],
+        "/ecsStack/ecs/Cluster": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "clusterName": "*",
+              "vpc": "*",
+              "enableFargateCapacityProviders": true
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "enableFargateCapacityProviders": []
+            }
+          }
+        ],
+        "/ecsStack/ecs/Cluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsCluster2761AC99"
+          }
+        ],
+        "/ecsStack/ecs/Cluster/Cluster": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsCluster7D1FD5EA"
+          }
+        ],
+        "/ecsStack/ecs/apiTaskDefinition": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/apiTaskDefinition/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsapiTaskDefinition82D41F87"
+          }
+        ],
+        "/ecsStack/ecs/apiTaskDefinition/web": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Proper policies need to be attached before pulling from ECR repository, or use 'fromEcrRepository'. [ack: @aws-cdk/aws-ecs:ecrImageRequiresPolicy]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "RepositoryImage.bind (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\images\\repository.js:1:1404)",
+              "new ContainerDefinition2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\container-definition.js:1:5998)",
+              "new ContainerDefinition2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "WrappedClass.addContainer (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\task-definition.js:1:19200)",
+              "WrappedClass.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\metadata-resource.js:1:2200)",
+              "new EcsConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\ecs-construct.ts:109:23)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:77:17)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          }
+        ],
+        "/ecsStack/ecs/apiTaskDefinition/web/LogGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "retention": "*"
+            }
+          }
+        ],
+        "/ecsStack/ecs/apiTaskDefinition/web/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsapiTaskDefinitionwebLogGroup4387B16B"
+          }
+        ],
+        "/ecsStack/ecs/workerTaskDefinition": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/workerTaskDefinition/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsworkerTaskDefinition3402BAAC"
+          }
+        ],
+        "/ecsStack/ecs/workerTaskDefinition/web": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Proper policies need to be attached before pulling from ECR repository, or use 'fromEcrRepository'. [ack: @aws-cdk/aws-ecs:ecrImageRequiresPolicy]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "RepositoryImage.bind (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\images\\repository.js:1:1404)",
+              "new ContainerDefinition2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\container-definition.js:1:5998)",
+              "new ContainerDefinition2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "WrappedClass.addContainer (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\task-definition.js:1:19200)",
+              "WrappedClass.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\metadata-resource.js:1:2200)",
+              "new EcsConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\ecs-construct.ts:125:26)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:77:17)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          }
+        ],
+        "/ecsStack/ecs/workerTaskDefinition/web/LogGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "retention": "*"
+            }
+          }
+        ],
+        "/ecsStack/ecs/workerTaskDefinition/web/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsworkerTaskDefinitionwebLogGroup53B62A70"
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/TaskRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/TaskRole/ImportTaskRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsdashboardTaskDefinitionTaskRoleAFB517DF"
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/TaskRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/TaskRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsdashboardTaskDefinitionTaskRoleDefaultPolicy32B62815"
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsdashboardTaskDefinition7C64D1B4"
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/web": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Proper policies need to be attached before pulling from ECR repository, or use 'fromEcrRepository'. [ack: @aws-cdk/aws-ecs:ecrImageRequiresPolicy]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "RepositoryImage.bind (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\images\\repository.js:1:1404)",
+              "new ContainerDefinition2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\container-definition.js:1:5998)",
+              "new ContainerDefinition2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "WrappedClass.addContainer (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\task-definition.js:1:19200)",
+              "WrappedClass.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\metadata-resource.js:1:2200)",
+              "new EcsConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\ecs-construct.ts:136:29)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:77:17)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/web/LogGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "retention": "*"
+            }
+          }
+        ],
+        "/ecsStack/ecs/dashboardTaskDefinition/web/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsdashboardTaskDefinitionwebLogGroup8456566A"
+          }
+        ],
+        "/ecsStack/ecs/apiFargateService": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "new BaseService (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8675)",
+              "new FargateService2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:6318)",
+              "new FargateService2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "new EcsConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\ecs-construct.ts:151:26)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:77:17)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/apiFargateService/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsapiFargateServiceBD2EDCF0"
+          }
+        ],
+        "/ecsStack/ecs/workerFargateService": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "new BaseService (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8675)",
+              "new FargateService2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:6318)",
+              "new FargateService2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "new EcsConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\ecs-construct.ts:164:29)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:77:17)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/workerFargateService/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsworkerFargateServiceA1198A87"
+          }
+        ],
+        "/ecsStack/ecs/dashboardFargateService": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "new BaseService (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8675)",
+              "new FargateService2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:6318)",
+              "new FargateService2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:681)",
+              "new EcsConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\ecs-construct.ts:181:32)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:77:17)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/ecs/dashboardFargateService/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsdashboardFargateService073D6EC8"
+          }
+        ],
+        "/ecsStack/alb/ALB": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/alb/ALB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "albALB2408ED9C"
+          }
+        ],
+        "/ecsStack/alb/ALB/Listener": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:warning",
+            "data": "A default Action already existed on this Listener and was replaced. Configure exactly one default Action. [ack: @aws-cdk/aws-elbv2:listenerExistingDefaultActionReplaced]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2066)",
+              "Annotations.addWarningV2 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:984)",
+              "WrappedClass._setDefaultAction (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-elasticloadbalancingv2\\lib\\shared\\base-listener.js:1:2723)",
+              "WrappedClass.setDefaultAction (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-elasticloadbalancingv2\\lib\\alb\\application-listener.js:1:16486)",
+              "WrappedClass.addTargetGroups (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\aws-elasticloadbalancingv2\\lib\\alb\\application-listener.js:1:13229)",
+              "WrappedClass.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\aws-cdk-lib\\core\\lib\\metadata-resource.js:1:2200)",
+              "new ALBConstruct (C:\\Users\\Admin\\ecs-project-v2\\lib\\modules\\alb-construct.ts:65:14)",
+              "new EcsStack (C:\\Users\\Admin\\ecs-project-v2\\lib\\ecs-stack.ts:97:17)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\bin\\ecs-project-v2.ts:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Module.m._compile (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+              "node:internal/modules/cjs/loader:1892:10",
+              "Object.require.extensions.<computed> [as .ts] (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "phase4 (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+              "bootstrap (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+              "main (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+              "Object.<anonymous> (C:\\Users\\Admin\\ecs-project-v2\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1760:14)",
+              "Object.<anonymous> (node:internal/modules/cjs/loader:1892:10)",
+              "Module.load (node:internal/modules/cjs/loader:1480:32)",
+              "Module._load (node:internal/modules/cjs/loader:1299:12)",
+              "TracingChannel.traceSync (node:diagnostics_channel:328:14)",
+              "wrapModuleLoad (node:internal/modules/cjs/loader:245:24)",
+              "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+              "node:internal/main/run_main_module:33:47"
+            ]
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/ecsStack/alb/ALB/Listener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "albALBListenerCCE9330B"
+          }
+        ],
+        "/ecsStack/alb/apiTG/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "albapiTG70B817D6"
+          }
+        ],
+        "/ecsStack/alb/dashboardTG/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "albdashboardTG2FC62E32"
+          }
+        ],
+        "/ecsStack/waf/waf": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "wafA10BC5A2"
+          }
+        ],
+        "/ecsStack/waf/wafAclAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "wafwafAclAssociation0C67C6CD"
+          }
+        ],
+        "/ecsStack/elasticCacheRedis/elasticCacheCluster": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "elasticCacheRediselasticCacheClusterE7A90B93"
+          }
+        ],
+        "/ecsStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ecsStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ecsStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ecsStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ecsStack"
+    },
+    "ecrStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ecrStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ecrStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ecrStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/61a02acb3bc692f33c7252dad8e133010f154df81a056e29cf5416f1a763162c.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ecrStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ecrStack.assets"
+      ],
+      "metadata": {
+        "/ecrStack/ecrApiRepo/apiEcrRepo": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "repositoryName": "*",
+              "emptyOnDelete": true,
+              "removalPolicy": "destroy"
+            }
+          }
+        ],
+        "/ecrStack/ecrApiRepo/apiEcrRepo/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecrApiRepoapiEcrRepoB359FE5F"
+          }
+        ],
+        "/ecrStack/ecrWorkerRepo/apiEcrRepo": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "repositoryName": "*",
+              "emptyOnDelete": true,
+              "removalPolicy": "destroy"
+            }
+          }
+        ],
+        "/ecrStack/ecrWorkerRepo/apiEcrRepo/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecrWorkerRepoapiEcrRepo4B81AB1A"
+          }
+        ],
+        "/ecrStack/ecrDashbaordRepo/apiEcrRepo": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "repositoryName": "*",
+              "emptyOnDelete": true,
+              "removalPolicy": "destroy"
+            }
+          }
+        ],
+        "/ecrStack/ecrDashbaordRepo/apiEcrRepo/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecrDashbaordRepoapiEcrRepoED577B91"
+          }
+        ],
+        "/ecrStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ecrStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ecrStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ecrStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ecrStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "aws-cdk-lib/feature-flag-report": {
+      "type": "cdk:feature-flag-report",
+      "properties": {
+        "module": "aws-cdk-lib",
+        "flags": {
+          "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Pass signingProfileName to CfnSigningProfile"
+          },
+          "@aws-cdk/core:newStyleStackSynthesis": {
+            "recommendedValue": true,
+            "explanation": "Switch to new stack synthesis method which enables CI/CD",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:stackRelativeExports": {
+            "recommendedValue": true,
+            "explanation": "Name exports based on the construct paths relative to the stack, rather than the global construct path",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Disable implicit openListener when custom security groups are provided"
+          },
+          "@aws-cdk/aws-rds:lowercaseDbIdentifier": {
+            "recommendedValue": true,
+            "explanation": "Force lowercasing of RDS Cluster names in CDK",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": {
+            "recommendedValue": true,
+            "explanation": "Allow adding/removing multiple UsagePlanKeys independently",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeVersionProps": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the  `fn.currentVersion`.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeLayerVersion": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the `fn.currentVersion`."
+          },
+          "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have cloudfront distributions use the security policy TLSv1.2_2021 by default.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:checkSecretUsage": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this flag to make it impossible to accidentally use SecretValues in unsafe locations"
+          },
+          "@aws-cdk/core:target-partitions": {
+            "userValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "recommendedValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "explanation": "What regions to include in lookup tables of environment agnostic stacks"
+          },
+          "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "ECS extensions will automatically add an `awslogs` driver if no logging is specified"
+          },
+          "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have Launch Templates generated by the `InstanceRequireImdsv2Aspect` use unique names."
+          },
+          "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "ARN format used by ECS. In the new ARN format, the cluster name is part of the resource ID."
+          },
+          "@aws-cdk/aws-iam:minimizePolicies": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Minimize IAM policies by combining Statements"
+          },
+          "@aws-cdk/core:validateSnapshotRemovalPolicy": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Error on snapshot removal policies on resources that do not support it."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeyAliasStackSafeResourceName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Generate key aliases that include the stack name"
+          },
+          "@aws-cdk/aws-s3:createDefaultLoggingPolicy": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to create an S3 bucket policy by default in cases where an AWS service would automatically create the Policy if one does not exist."
+          },
+          "@aws-cdk/aws-sns-subscriptions:restrictSqsDescryption": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Restrict KMS key policy for encrypted Queues a bit more"
+          },
+          "@aws-cdk/aws-apigateway:disableCloudWatchRole": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Make default CloudWatch Role behavior safe for multiple API Gateways in one environment"
+          },
+          "@aws-cdk/core:enablePartitionLiterals": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Make ARNs concrete if AWS partition is known"
+          },
+          "@aws-cdk/aws-events:eventsTargetQueueSameAccount": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Event Rules may only push to encrypted SQS queues in the same account"
+          },
+          "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Avoid setting the \"ECS\" deployment controller when adding a circuit breaker"
+          },
+          "@aws-cdk/aws-iam:importedRoleStackSafeDefaultPolicyName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature to create default policy names for imported roles that depend on the stack the role is in."
+          },
+          "@aws-cdk/aws-s3:serverAccessLogsUseBucketPolicy": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Use S3 Bucket Policy instead of ACLs for Server Access Logging"
+          },
+          "@aws-cdk/aws-route53-patters:useCertificate": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Use the official `Certificate` resource instead of `DnsValidatedCertificate`"
+          },
+          "@aws-cdk/customresources:installLatestAwsSdkDefault": {
+            "userValue": false,
+            "recommendedValue": false,
+            "explanation": "Whether to install the latest SDK by default in AwsCustomResource"
+          },
+          "@aws-cdk/aws-rds:databaseProxyUniqueResourceName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Use unique resource name for Database Proxy"
+          },
+          "@aws-cdk/aws-codedeploy:removeAlarmsFromDeploymentGroup": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Remove CloudWatch alarms from deployment group"
+          },
+          "@aws-cdk/aws-apigateway:authorizerChangeDeploymentLogicalId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Include authorizer configuration in the calculation of the API deployment logical ID."
+          },
+          "@aws-cdk/aws-ec2:launchTemplateDefaultUserData": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Define user data for a launch template by default when a machine image is provided."
+          },
+          "@aws-cdk/aws-secretsmanager:useAttachedSecretResourcePolicyForSecretTargetAttachments": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "SecretTargetAttachments uses the ResourcePolicy of the attached Secret."
+          },
+          "@aws-cdk/aws-redshift:columnId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Whether to use an ID to track Redshift column changes"
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:enableEmrServicePolicyV2": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable AmazonEMRServicePolicy_v2 managed policies"
+          },
+          "@aws-cdk/aws-ec2:restrictDefaultSecurityGroup": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Restrict access to the VPC default security group"
+          },
+          "@aws-cdk/aws-apigateway:requestValidatorUniqueId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Generate a unique id for each RequestValidator added to a method"
+          },
+          "@aws-cdk/aws-kms:aliasNameRef": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "KMS Alias name and keyArn will have implicit reference to KMS Key"
+          },
+          "@aws-cdk/aws-kms:applyImportedAliasPermissionsToPrincipal": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable grant methods on Aliases imported by name to use kms:ResourceAliases condition"
+          },
+          "@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Generate a launch template when creating an AutoScalingGroup"
+          },
+          "@aws-cdk/core:includePrefixInUniqueNameGeneration": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Include the stack prefix in the stack name generation process"
+          },
+          "@aws-cdk/aws-efs:denyAnonymousAccess": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "EFS denies anonymous clients accesses"
+          },
+          "@aws-cdk/aws-opensearchservice:enableOpensearchMultiAzWithStandby": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enables support for Multi-AZ with Standby deployment for opensearch domains"
+          },
+          "@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enables aws-lambda-nodejs.Function to use the latest available NodeJs runtime as the default"
+          },
+          "@aws-cdk/aws-efs:mountTargetOrderInsensitiveLogicalId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, mount targets will have a stable logicalId that is linked to the associated subnet."
+          },
+          "@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, a scope of InstanceParameterGroup for AuroraClusterInstance with each parameters will change."
+          },
+          "@aws-cdk/aws-appsync:useArnForSourceApiAssociationIdentifier": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, will always use the arn for identifiers for CfnSourceApiAssociation in the GraphqlApi construct rather than id."
+          },
+          "@aws-cdk/aws-rds:preventRenderingDeprecatedCredentials": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, creating an RDS database cluster from a snapshot will only render credentials for snapshot credentials."
+          },
+          "@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the CodeCommit source action is using the default branch name 'main'."
+          },
+          "@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the logical ID of a Lambda permission for a Lambda action includes an alarm ID."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeysDefaultValueToFalse": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default value for crossAccountKeys to false."
+          },
+          "@aws-cdk/aws-codepipeline:defaultPipelineTypeToV2": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default pipeline type to V2."
+          },
+          "@aws-cdk/aws-kms:reduceCrossAccountRegionPolicyScope": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, IAM Policy created from KMS key grant will reduce the resource scope to this key only."
+          },
+          "@aws-cdk/pipelines:reduceAssetRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from PipelineAssetsFileRole trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-eks:nodegroupNameAttribute": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, nodegroupName attribute of the provisioned EKS NodeGroup will not have the cluster name prefix."
+          },
+          "@aws-cdk/aws-ec2:ebsDefaultGp3Volume": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the default volume type of the EBS volume will be GP3"
+          },
+          "@aws-cdk/aws-ecs:removeDefaultDeploymentAlarm": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, remove default deployment alarm settings"
+          },
+          "@aws-cdk/custom-resources:logApiResponseDataPropertyTrueDefault": {
+            "userValue": false,
+            "recommendedValue": false,
+            "explanation": "When enabled, the custom resource used for `AwsCustomResource` will configure the `logApiResponseData` property as true by default"
+          },
+          "@aws-cdk/aws-s3:keepNotificationInImportedBucket": {
+            "userValue": false,
+            "recommendedValue": false,
+            "explanation": "When enabled, Adding notifications to a bucket in the current stack will not remove notification from imported stack."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:useNewS3UriParametersForBedrockInvokeModelTask": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use new props for S3 URI field in task definition of state machine for bedrock invoke model.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:explicitStackTags": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, stack tags need to be assigned explicitly on a Stack."
+          },
+          "@aws-cdk/aws-ecs:enableImdsBlockingDeprecatedFeature": {
+            "userValue": false,
+            "recommendedValue": false,
+            "explanation": "When set to true along with canContainersAccessInstanceRole=false in ECS cluster, new updated commands will be added to UserData to block container accessing IMDS. **Applicable to Linux only. IMPORTANT: See [details.](#aws-cdkaws-ecsenableImdsBlockingDeprecatedFeature)**"
+          },
+          "@aws-cdk/aws-ecs:disableEcsImdsBlocking": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When set to true, CDK synth will throw exception if canContainersAccessInstanceRole is false. **IMPORTANT: See [details.](#aws-cdkaws-ecsdisableEcsImdsBlocking)**"
+          },
+          "@aws-cdk/aws-ecs:reduceEc2FargateCloudWatchPermissions": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, we will only grant the necessary permissions when users specify cloudwatch log group through logConfiguration"
+          },
+          "@aws-cdk/aws-dynamodb:resourcePolicyPerReplica": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled will allow you to specify a resource policy per replica, and not copy the source table policy to all replicas"
+          },
+          "@aws-cdk/aws-ec2:ec2SumTImeoutEnabled": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, initOptions.timeout and resourceSignalTimeout values will be summed together."
+          },
+          "@aws-cdk/aws-appsync:appSyncGraphQLAPIScopeLambdaPermission": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, a Lambda authorizer Permission created when using GraphqlApi will be properly scoped with a SourceArn."
+          },
+          "@aws-cdk/aws-rds:setCorrectValueForDatabaseInstanceReadReplicaInstanceResourceId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the value of property `instanceResourceId` in construct `DatabaseInstanceReadReplica` will be set to the correct value which is `DbiResourceId` instead of currently `DbInstanceArn`"
+          },
+          "@aws-cdk/core:cfnIncludeRejectComplexResourceUpdateCreatePolicyIntrinsics": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, CFN templates added with `cfn-include` will error if the template contains Resource Update or Create policies with CFN Intrinsics that include non-primitive values."
+          },
+          "@aws-cdk/aws-lambda-nodejs:sdkV3ExcludeSmithyPackages": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, both `@aws-sdk` and `@smithy` packages will be excluded from the Lambda Node.js 18.x runtime to prevent version mismatches in bundled applications."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:fixRunEcsTaskPolicy": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the resource of IAM Run Ecs policy generated by SFN EcsRunTask will reference the definition, instead of constructing ARN."
+          },
+          "@aws-cdk/aws-ec2:bastionHostUseAmazonLinux2023ByDefault": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the BastionHost construct will use the latest Amazon Linux 2023 AMI, instead of Amazon Linux 2."
+          },
+          "@aws-cdk/core:aspectStabilization": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a stabilization loop will be run when invoking Aspects during synthesis.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-route53-targets:userPoolDomainNameMethodWithoutCustomResource": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, use a new method for DNS Name of user pool domain target without creating a custom resource."
+          },
+          "@aws-cdk/aws-elasticloadbalancingV2:albDualstackWithoutPublicIpv4SecurityGroupRulesDefault": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the default security group ingress rules will allow IPv6 ingress from anywhere"
+          },
+          "@aws-cdk/aws-iam:oidcRejectUnauthorizedConnections": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the default behaviour of OIDC provider will reject unauthorized connections"
+          },
+          "@aws-cdk/core:enableAdditionalMetadataCollection": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will expand the scope of usage data collected to better inform CDK development and improve communication for security concerns and emerging issues."
+          },
+          "@aws-cdk/aws-lambda:createNewPoliciesWithAddToRolePolicy": {
+            "userValue": false,
+            "recommendedValue": false,
+            "explanation": "[Deprecated] When enabled, Lambda will create new inline policies with AddToRolePolicy instead of adding to the Default Policy Statement"
+          },
+          "@aws-cdk/aws-s3:setUniqueReplicationRoleName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will automatically generate a unique role name that is used for s3 object replication."
+          },
+          "@aws-cdk/pipelines:reduceStageRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from Stage addActions trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-events:requireEventBusPolicySid": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, grantPutEventsTo() will use resource policies with Statement IDs for service principals."
+          },
+          "@aws-cdk/core:aspectPrioritiesMutating": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When set to true, Aspects added by the construct library on your behalf will be given a priority of MUTATING."
+          },
+          "@aws-cdk/aws-dynamodb:retainTableReplica": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, table replica will be default to the removal policy of source table unless specified otherwise."
+          },
+          "@aws-cdk/cognito:logUserPoolClientSecretValue": {
+            "recommendedValue": false,
+            "explanation": "When disabled, the value of the user pool client secret will not be logged in the custom resource lambda function logs."
+          },
+          "@aws-cdk/pipelines:reduceCrossAccountActionRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "When enabled, scopes down the trust policy for the cross-account action role",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-stepfunctions:useDistributedMapResultWriterV2": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the resultWriterV2 property of DistributedMap will be used insted of resultWriter"
+          },
+          "@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Add an S3 trust policy to a KMS key resource policy for SNS subscriptions."
+          },
+          "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the EgressOnlyGateway resource is only created if private subnets are defined in the dual-stack VPC."
+          },
+          "@aws-cdk/aws-ec2-alpha:useResourceIdForVpcV2Migration": {
+            "recommendedValue": false,
+            "explanation": "When enabled, use resource IDs for VPC V2 migration"
+          },
+          "@aws-cdk/aws-s3:publicAccessBlockedByDefault": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, setting any combination of options for BlockPublicAccess will automatically set true for any options not defined."
+          },
+          "@aws-cdk/aws-lambda:useCdkManagedLogGroup": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK creates and manages loggroup for the lambda function"
+          },
+          "@aws-cdk/aws-elasticloadbalancingv2:networkLoadBalancerWithSecurityGroupByDefault": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, Network Load Balancer will be created with a security group by default."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:httpInvokeDynamicJsonPathEndpoint": {
+            "recommendedValue": true,
+            "explanation": "When enabled, allows using a dynamic apiEndpoint with JSONPath format in HttpInvoke tasks.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:uniqueTargetGroupId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, ECS patterns will generate unique target group IDs to prevent conflicts during load balancer replacement"
+          }
+        }
+      }
+    }
+  },
+  "minimumCliVersion": "2.1033.0"
+}

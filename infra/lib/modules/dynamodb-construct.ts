@@ -1,12 +1,13 @@
-import * as cdk from "aws-cdk-lib/core";
+import {RemovalPolicy} from "aws-cdk-lib/core";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from "constructs";
 
-export interface DynamoDBConstructProps extends cdk.StackProps {
-  tableName: string;
+export interface DynamoDBConstructProps {
+  tableName?: string;
   partitionKey: dynamodb.Attribute;
-  billing: dynamodb.Billing;
-  pointInTimeRecoverySpecification: dynamodb.PointInTimeRecoverySpecification;
+  billing?: dynamodb.Billing;
+  pointInTimeRecoveryEnabled: boolean
+  removalPolicy?: RemovalPolicy;
 }
 
 export class DynamoDBConstruct extends Construct {
@@ -19,7 +20,10 @@ export class DynamoDBConstruct extends Construct {
       tableName: props.tableName,
       partitionKey: props.partitionKey,
       billing: props.billing,
-      pointInTimeRecoverySpecification: props.pointInTimeRecoverySpecification
+      pointInTimeRecoverySpecification: {
+        pointInTimeRecoveryEnabled: props.pointInTimeRecoveryEnabled,
+      },
+      removalPolicy: props.removalPolicy
     });
   }
 }

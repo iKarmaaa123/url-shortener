@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"log"
+	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -15,10 +17,33 @@ import (
 var db *sql.DB
 
 func main() {
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		log.Fatal("DATABASE_URL is required")
+	dbSecretJSON := os.Getenv("DB_CREDENTIALS")
+	if dbSecretJSON == "" {
+		log.Fatal("DB_CREDENTIALS is required")
 	}
+
+	type DBSecret struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		Host     string `json:"host"`
+		Port     int    `json:"port"`
+		DBName   string `json:"dbname"`
+	}
+
+	var dbSecret DBSecret
+	if err := json.Unmarshal([]byte(dbSecretJSON), &dbSecret); err != nil {
+		log.Fatalf("Failed to parse DB_SECRET: %v", err)
+	}
+
+	log.Printf("Connecting to database at %s:%d (user: %s, dbname: %s)", dbSecret.Host, dbSecret.Port, dbSecret.Username, dbSecret.DBName)
+
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=require",
+		url.QueryEscape(dbSecret.Username),
+		url.QueryEscape(dbSecret.Password),
+		dbSecret.Host,
+		dbSecret.Port,
+		dbSecret.DBName,
+	)
 
 	var err error
 	db, err = sql.Open("postgres", dbURL)
@@ -194,10 +219,12 @@ func getEnv(key, fallback string) string {
 
 func waitForDB() {
 	for i := 0; i < 30; i++ {
-		if err := db.Ping(); err == nil {
+		err := db.Ping()
+		if err == nil {
+			log.Println("Successfully connected to database!")
 			return
 		}
-		log.Printf("Waiting for database... (%d/30)", i+1)
+		log.Printf("Waiting for database... (%d/30) - Error: %v", i+1, err)
 		time.Sleep(time.Second)
 	}
 	log.Fatal("Database not ready after 30s")

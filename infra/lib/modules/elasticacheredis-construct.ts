@@ -1,4 +1,5 @@
 import { CfnCacheCluster, CfnSubnetGroup } from "aws-cdk-lib/aws-elasticache";
+import { ISubnetRef } from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";
 
 export enum Engine {
@@ -13,13 +14,19 @@ export interface ElastiCacheRedisProps {
   engine: Engine;
   autoMinorVersionUpgrade: boolean;
   networkType?: string;
-  cacheSubnetGroupName?: string;
   vpcSecurityGroupIds: string[];
+  subnetIds: (string | ISubnetRef)[];
+  description: string;
 }
 
 export class ElastiCacheRedis extends Construct {
   constructor(scope: Construct, id: string, props: ElastiCacheRedisProps) {
     super(scope, id);
+
+    const subnetGroup = new CfnSubnetGroup(this, `elasticCacheSubnetGroup`, {
+      description: props.description,
+      subnetIds: props.subnetIds
+    });
 
     new CfnCacheCluster(this, "elasticCacheCluster", {
       clusterName: props.clusterName,
@@ -28,7 +35,7 @@ export class ElastiCacheRedis extends Construct {
       numCacheNodes: props.engine === Engine.redis ? 1 : 0,
       autoMinorVersionUpgrade: props.autoMinorVersionUpgrade,
       networkType: props.networkType,
-      cacheSubnetGroupName: props.cacheSubnetGroupName,
+      cacheSubnetGroupName: subnetGroup.ref,
       vpcSecurityGroupIds: props.vpcSecurityGroupIds,
     });
   }
