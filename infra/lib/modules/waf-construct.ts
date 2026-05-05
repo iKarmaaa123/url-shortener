@@ -3,14 +3,16 @@ import { Construct } from "constructs";
 
 interface WafConstructProps {
   block?: waf.CfnWebACL.BlockActionProperty;
+  responseCode: number;
   scope: string;
   name?: string;
-  visibilityConfig: waf.CfnWebACL.VisibilityConfigProperty;
   ruleName: string;
   priority: number;
-  action: waf.CfnWebACL.RuleActionProperty;
-  statement: waf.CfnWebACL.StatementProperty;
   resourceArn: string;
+  cloudWatchMetricsEnabled: boolean;
+  metricName: string;
+  sampledRequestsEnabled: true;
+  countryCodes: string[];
 }
 
 export class WafContruct extends Construct {
@@ -18,16 +20,30 @@ export class WafContruct extends Construct {
     super(scope, id);
 
     const defaultActionProperty: waf.CfnWebACL.DefaultActionProperty = {
-      block: props.block,
+      block: {
+        customResponse: {
+          responseCode: props.responseCode,
+        },
+      },
     };
 
     const wafRules: waf.CfnWebACL.RuleProperty[] = [
       {
         name: props.ruleName,
         priority: props.priority,
-        action: props.action,
-        statement: props.statement,
-        visibilityConfig: props.visibilityConfig,
+        action: {
+          allow: {},
+        },
+        statement: {
+          geoMatchStatement: {
+            countryCodes: ["US", "GB"],
+          },
+        },
+        visibilityConfig: {
+          cloudWatchMetricsEnabled: props.cloudWatchMetricsEnabled,
+          metricName: props.metricName,
+          sampledRequestsEnabled: props.sampledRequestsEnabled,
+        },
       },
     ];
 
@@ -35,7 +51,11 @@ export class WafContruct extends Construct {
       defaultAction: defaultActionProperty,
       scope: props.scope,
       name: props.name,
-      visibilityConfig: props.visibilityConfig,
+      visibilityConfig: {
+        cloudWatchMetricsEnabled: props.cloudWatchMetricsEnabled,
+        metricName: props.metricName,
+        sampledRequestsEnabled: props.sampledRequestsEnabled,
+        },
       rules: wafRules,
     });
 
