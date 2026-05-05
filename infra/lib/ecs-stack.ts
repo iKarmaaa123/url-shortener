@@ -122,7 +122,7 @@ export class EcsStack extends Stack {
       alb.dashboardGreenTargetGroup,
     );
 
-    new CodeDeployConstruct(this, "CodeDeploy", {
+    const codeDeploy = new CodeDeployConstruct(this, "CodeDeploy", {
       apiTargetGroupmetric: alb.apiGreenTargetGroup.metrics.unhealthyHostCount(),
       dashboardTargetGroupmetric: alb.dashboardGreenTargetGroup.metrics.unhealthyHostCount(),
       threshold: 1,
@@ -141,29 +141,16 @@ export class EcsStack extends Stack {
       deploymentInAlarm: true
     })
 
-    new WafContruct(this, "waf", {
-      block: {
-        customResponse: {
-          responseCode: 403,
-        },
-      },
+    const waf = new WafContruct(this, "waf", {
+      responseCode: 403,
       scope: "REGIONAL",
       name: "ecsWaf",
-      visibilityConfig: {
-        cloudWatchMetricsEnabled: true,
-        metricName: "wafMetric",
-        sampledRequestsEnabled: true,
-      },
+      cloudWatchMetricsEnabled: true,
+      metricName: "wafMetric",
+      sampledRequestsEnabled: true,
       ruleName: "ecsWafRule",
       priority: 0,
-      action: {
-        allow: {},
-      },
-      statement: {
-        geoMatchStatement: {
-          countryCodes: ["US", "GB"],
-        },
-      },
+      countryCodes: ["US", "GB"],
       resourceArn: alb.alb.loadBalancerArn,
     });
 
