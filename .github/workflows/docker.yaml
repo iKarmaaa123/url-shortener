@@ -85,5 +85,5 @@ jobs:
 
     - name: Pushing up docker images to ECR repositories
       run: |
-        docker tag ${{ matrix.services }}:$IMAGE_TAG ${{ secrets.[matrix.ecr_repo] }}:$IMAGE_TAG
-        docker push ${{ secrets.[matrix.ecr_repo] }}
+        docker tag ${{ matrix.services }}:$IMAGE_TAG ${{ secrets[matrix.ecr_repo] }}:$IMAGE_TAG
+        docker push ${{ secrets[matrix.ecr_repo] }}
