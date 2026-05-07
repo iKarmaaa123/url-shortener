@@ -7,7 +7,6 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  IMAGE_TAG: ${{ github.sha }}
 
 permissions:
   id-token: write
@@ -16,8 +15,8 @@ permissions:
 jobs:
   ecr_repositories_deployment:
     runs-on: ubuntu-latest
+
     steps:
-  
     - name: Checkout repository
       uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231
 
@@ -43,6 +42,7 @@ jobs:
       run: cdk deploy ecrStack --require-approval never
   
   docker_images:
+    needs: ecr_repositories_deployment
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -60,12 +60,12 @@ jobs:
 
     - name: Building docker images
       run: |
-        docker build -t ${{ matrix.services }}:$IMAGE_TAG ./services/api
+        docker build -t ${{ matrix.services }}:${{ github.sha }} ./services/api
     
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
       with:
-        image-ref: ${{ matrix.services }}:$IMAGE_TAG
+        image-ref: ${{ matrix.services }}:${{ github.sha }}
         format: 'table'
         exit-code: '1'
         ignore-unfixed: true
@@ -85,5 +85,5 @@ jobs:
 
     - name: Pushing up docker images to ECR repositories
       run: |
-        docker tag ${{ matrix.services }}:$IMAGE_TAG ${{ secrets[matrix.ecr_repo] }}:$IMAGE_TAG
+        docker tag ${{ matrix.services }}:${{ github.sha }} ${{ secrets[matrix.ecr_repo] }}:${{ github.sha }}
         docker push ${{ secrets[matrix.ecr_repo] }}
