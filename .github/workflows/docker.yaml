@@ -39,12 +39,11 @@ jobs:
         role-to-assume: ${{ secrets.GHA_RUNNER_AWS_IAM_ROLE }}
 
     - name: Running cdk diff
-      run: cdk diff ecrStack --require-approval never
-      working-directory: infra
+      run: npx cdk diff ecrStack --require-approval never
 
     - name: Running cdk deploy
-      run: cdk deploy ecrStack --require-approval never
-  
+      run: npx cdk deploy ecrStack --require-approval never
+
   docker_images:
     needs: ecr_repositories_deployment
     runs-on: ubuntu-latest
