@@ -104,6 +104,7 @@ export class EcsStack extends Stack {
       postgresqlSecret: postgresqlDatabase.database.secret,
       deploymentControllerType: DeploymentControllerType.CODE_DEPLOY,
       alternateTargetGroup: alb.apiGreenTargetGroup,
+      imageTag: this.node.tryGetContext("imageTag")
     });
 
     ecs.ecsApiService.attachToApplicationTargetGroup(
