@@ -43,7 +43,7 @@ jobs:
       run: npx cdk synth ecsStack -c imageTag=${{ github.sha }} --require-approval never
 
     - name: Running Checkov
-      uses: bridgecrewio/checkov-action@4048c972aae68d0b983a48bb3479aab2d877b8s98
+      uses: bridgecrewio/checkov-action@4048c972aae68d0b983a48bb3479aab2d877b898
       with:
         directory: ./infra/cdk.out
         framework: cloudformation
