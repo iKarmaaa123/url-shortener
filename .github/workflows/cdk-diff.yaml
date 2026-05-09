@@ -1,7 +1,9 @@
 name: CDK Diff Workflow
+
 on:
-  paths:
-  - infra/**
+  push:
+    paths:
+    - infra/**
   workflow_dispatch:
 
   defaults:
