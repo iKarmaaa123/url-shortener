@@ -6,6 +6,9 @@ on:
     - infra/**
   workflow_dispatch:
 
+env:
+  AWS_REGION: us-east-1
+
 jobs:
   cdk_diff:
     runs-on: ubuntu-latest
@@ -30,6 +33,12 @@ jobs:
     - name: Installing project dependencies
       run: npm install
 
+    - name: Configuring AWS Crdentials for GitHub Actions Runner
+      uses: aws-actions/configure-aws-credentials@681892c11b95f935aee43b00e43466327707adba
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.GHA_RUNNER_AWS_IAM_ROLE }}
+
     - name: Running cdk synth
       run: npx cdk synth ecsStack --require-approval never
 
@@ -41,12 +50,6 @@ jobs:
         quiet: true
         soft_fail: true
         format: table
-
-    - name: Configuring AWS Crdentials for GitHub Actions Runner
-      uses: aws-actions/configure-aws-credentials@681892c11b95f935aee43b00e43466327707adba
-      with:
-        aws-region: ${{ env.AWS_REGION }}
-        role-to-assume: ${{ secrets.GHA_RUNNER_AWS_IAM_ROLE }}
         
     - name: Running cdk diff
       run: npx cdk diff ecsStack --require-approval never
