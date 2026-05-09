@@ -6,7 +6,7 @@ env:
   AWS_REGION: us-east-1
 
 jobs:
-  cdk_deploy:
+  cdk_destroy:
     runs-on: ubuntu-latest
 
     defaults:
@@ -29,7 +29,7 @@ jobs:
     - name: Installing project dependencies
       run: npm install
         
-    - name: Configuring AWS Crdentials for GitHub Actions Runner
+    - name: Configuring AWS Crdentials for GitHub Actions Runner 
       uses: aws-actions/configure-aws-credentials@681892c11b95f935aee43b00e43466327707adba
       with:
         aws-region: ${{ env.AWS_REGION }}
