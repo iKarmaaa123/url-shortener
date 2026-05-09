@@ -36,4 +36,4 @@ jobs:
         role-to-assume: ${{ secrets.GHA_RUNNER_AWS_IAM_ROLE }}
         
     - name: Running cdk deploy
-      run: npx cdk deploy ecsStack --require-approval never      
+      run: npx cdk deploy ecsStack -c imageTag=${{ github.sha }} --require-approval never      
