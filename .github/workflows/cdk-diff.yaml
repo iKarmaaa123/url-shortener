@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  cdk_deploy:
+  cdk_diff:
     runs-on: ubuntu-latest
 
     defaults:
@@ -39,7 +39,7 @@ jobs:
         directory: ./infra/cdk.out
         framework: cloudformation
         quiet: true
-        soft-fail: true
+        soft_fail: true
         format: table
 
     - name: Configuring AWS Crdentials for GitHub Actions Runner

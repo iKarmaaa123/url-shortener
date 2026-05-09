@@ -130,7 +130,7 @@ export class EcsConstruct extends Construct {
 
     workerTaskDefinition.addContainer("workerTaskDefinition", {
       containerName: "workerContainer",
-      image: ecs.ContainerImage.fromRegistry("648767092427.dkr.ecr.us-east-1.amazonaws.com/worker-repository "),
+      image: ecs.ContainerImage.fromRegistry("648767092427.dkr.ecr.us-east-1.amazonaws.com/worker-repository"),
       environment: {
         SQS_QUEUE_URL: props.sqsQueue.queueUrl,
         AWS_DEFAULT_REGION: props.region,
