@@ -122,23 +122,5 @@ export class ALBConstruct extends Construct {
       action: elbv2.ListenerAction.forward([this.apiTargetGroup]),
       priority: 2
     });
-
-    // this.listener.addAction("dashboardRecentPath", {
-    //   conditions: [elbv2.ListenerCondition.pathPatterns(["/recent"])],
-    //   action: elbv2.ListenerAction.forward([this.dashboardTargetGroup]),
-    //   priority: 4
-    // })
-
-    // this.listener.addAction("dashboardTopPath", {
-    //   conditions: [elbv2.ListenerCondition.pathPatterns(["/top"])],
-    //   action: elbv2.ListenerAction.forward([this.dashboardTargetGroup]),
-    //   priority: 5
-    // })
-
-    // this.listener.addAction("dashboardUrlStatsPath", {
-    //   conditions: [elbv2.ListenerCondition.pathPatterns(["/url/*"])],
-    //   action: elbv2.ListenerAction.forward([this.dashboardTargetGroup]),
-    //   priority: 6
-    // })
   }
 }
