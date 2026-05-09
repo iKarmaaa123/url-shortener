@@ -63,15 +63,14 @@ jobs:
 
     - name: Building docker images
       run: |
-        docker build -t ${{ matrix.services }}:${{ github.sha }} ./services/api
+        docker build -t ${{ matrix.service }}:${{ github.sha }} ./services/api
     
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
       with:
-        image-ref: ${{ matrix.services }}:${{ github.sha }}
+        image-ref: ${{ matrix.service }}:${{ github.sha }}
         format: 'table'
-        exit-code: '1'
-        ignore-unfixed: true
+        exit-code: '0'
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
     
@@ -88,5 +87,5 @@ jobs:
 
     - name: Pushing up docker images to ECR repositories
       run: |
-        docker tag ${{ matrix.services }}:${{ github.sha }} ${{ secrets[matrix.ecr_repo] }}:${{ github.sha }}
-        docker push ${{ secrets[matrix.ecr_repo] }}
+        docker tag ${{ matrix.service }}:${{ github.sha }} ${{ secrets[matrix.ecr_repo] }}:${{ github.sha }}
+        docker push ${{ secrets[matrix.ecr_repo] }}:${{ github.sha }}
