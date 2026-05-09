@@ -6,13 +6,13 @@ on:
     - infra/**
   workflow_dispatch:
 
-  defaults:
-    run:
-      working-directory: ./infra
-
 jobs:
   cdk_deploy:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./infra
 
     permissions:
       contents: read
