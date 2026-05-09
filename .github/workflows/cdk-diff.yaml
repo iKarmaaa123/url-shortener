@@ -1,0 +1,44 @@
+name: CDK Diff Workflow
+on:
+  paths:
+  - infra/**
+  workflow_dispatch:
+
+  defaults:
+    run:
+      working-directory: ./infra
+
+jobs:
+  cdk_deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+    - name: Installing Node
+      uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c
+      with:
+        node-version: 25
+
+    - name: Installing project dependencies
+      run: npm install
+
+    - name: Running Checkov
+      uses: bridgecrewio/checkov-action@4048c972aae68d0b983a48bb3479aab2d877b898
+      with:
+        directory: .
+        quiet: true
+        soft-fail: true
+        format: table
+
+    - name: Configuring AWS Crdentials for GitHub Actions Runner
+      uses: aws-actions/configure-aws-credentials@681892c11b95f935aee43b00e43466327707adba
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.GHA_RUNNER_AWS_IAM_ROLE }}
+        
+    - name: Running cdk diff
+      run: npx cdk diff ecsStack --require-approval never
+      

@@ -1,0 +1,34 @@
+name: CDK Destroy Workflow
+on:
+  workflow_dispatch:
+
+jobs:
+  cdk_deploy:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./infra
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+    - name: Installing Node
+      uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c
+      with:
+        node-version: 25
+
+    - name: Installing project dependencies
+      run: npm install
+        
+    - name: Configuring AWS Crdentials for GitHub Actions Runner
+      uses: aws-actions/configure-aws-credentials@681892c11b95f935aee43b00e43466327707adba
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        role-to-assume: ${{ secrets.GHA_RUNNER_AWS_IAM_ROLE }}
+        
+    - name: Running cdk destroy
+      run: npx cdk destroy ecsStack ecrStack --force
+      
