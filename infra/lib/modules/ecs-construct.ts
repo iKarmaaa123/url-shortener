@@ -7,6 +7,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as sm from "aws-cdk-lib/aws-secretsmanager";
 import { IQueue } from "aws-cdk-lib/aws-sqs";
 import { Construct } from "constructs";
+import { Repository } from "aws-cdk-lib/aws-ecr";
 
 export interface EcsConstructProps {
   clusterName?: string;
@@ -29,6 +30,7 @@ export interface EcsConstructProps {
   postgresqlSecret?: sm.ISecret
   alternateTargetGroup: ITargetGroup;
   deploymentControllerType: ecs.DeploymentControllerType;
+  imageTag?: string;
 }
 
 export class EcsConstruct extends Construct {
@@ -38,6 +40,10 @@ export class EcsConstruct extends Construct {
 
   constructor(scope: Construct, id: string, props: EcsConstructProps) {
     super(scope, id);
+
+    const ecrApiRepo = Repository.fromRepositoryName(this, "apiRepositoryName", "api-repository")
+    const ecrWorkerRepo = Repository.fromRepositoryName(this, "workerRepositoryName", "worker-repository")
+    const ecrDashboardRepo = Repository.fromRepositoryName(this, "dashboardRepositoryName", "dashboard-repository")
 
     const executionRole = new iam.Role(this, "executionRole", {
       roleName: props.executionRoleName,
@@ -105,9 +111,7 @@ export class EcsConstruct extends Construct {
 
     apiTaskDefinition.addContainer("apiTaskDefinition", {
       containerName: "apiContainer",
-      image: ecs.ContainerImage.fromRegistry(
-        "648767092427.dkr.ecr.us-east-1.amazonaws.com/api-repository",
-      ),
+      image: ecs.ContainerImage.fromEcrRepository(ecrApiRepo, props.imageTag),
       environment: {
         SQS_QUEUE_URL: props.sqsQueue.queueUrl,
         TABLE_NAME: props.dynamodbTable.tableName,
@@ -130,7 +134,7 @@ export class EcsConstruct extends Construct {
 
     workerTaskDefinition.addContainer("workerTaskDefinition", {
       containerName: "workerContainer",
-      image: ecs.ContainerImage.fromRegistry("648767092427.dkr.ecr.us-east-1.amazonaws.com/worker-repository"),
+      image: ecs.ContainerImage.fromEcrRepository(ecrWorkerRepo, props.imageTag),
       environment: {
         SQS_QUEUE_URL: props.sqsQueue.queueUrl,
         AWS_DEFAULT_REGION: props.region,
@@ -155,9 +159,7 @@ export class EcsConstruct extends Construct {
 
      dashboardTaskDefinition.addContainer("dashboardTaskDefinition", {
       containerName: "dashboardContainer",
-      image: ecs.ContainerImage.fromRegistry(
-        "648767092427.dkr.ecr.us-east-1.amazonaws.com/dashboard-repository",
-      ),
+      image: ecs.ContainerImage.fromEcrRepository(ecrDashboardRepo, props.imageTag),
       portMappings: [
         {
           containerPort: 8081,
