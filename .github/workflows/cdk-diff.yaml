@@ -19,6 +19,9 @@ jobs:
       id-token: write
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231
+
     - name: Installing Node
       uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c
       with:
@@ -30,7 +33,8 @@ jobs:
     - name: Running Checkov
       uses: bridgecrewio/checkov-action@4048c972aae68d0b983a48bb3479aab2d877b898
       with:
-        directory: .
+        directory: ./infra/cdk.out
+        framework: cloudformation
         quiet: true
         soft-fail: true
         format: table
