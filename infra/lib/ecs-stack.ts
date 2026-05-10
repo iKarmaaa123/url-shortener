@@ -15,155 +15,145 @@ import { ProgresqlDatabaseConstruct } from "./modules/postgresql-construct";
 import { ElastiCacheRedis, Engine } from "./modules/elasticacheredis-construct";
 import { CodeDeployConstruct } from "./modules/codedeploy-construct";
 import * as rds from "aws-cdk-lib/aws-rds";
+import { AppConstants } from "./config/app-constants";
+import { AppSettings } from "./config/app-settings";
 
 export class EcsStack extends Stack {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
     const vpc = new VpcConstruct(this, "vpc", {
-      vpcName: "ecs-vpc",
-      ipAddresses: ec2.IpAddresses.cidr("10.0.0.0/16"),
-      cidrMask: 24,
-      publicSubnetName: "ecsPublicSubnets",
-      privateSubnetName: "ecsPrivateSubnets",    
+      vpcName: AppConstants.VPC_NAME,
+      ipAddresses: ec2.IpAddresses.cidr(AppConstants.VPC_CIDR),
+      cidrMask: AppConstants.VPC_CIDR_MASK,
+      publicSubnetName: AppConstants.PUBLIC_SUBNET_NAME,
+      privateSubnetName: AppConstants.PRIVATE_SUBNET_NAME,    
       publicSubnetType: ec2.SubnetType.PUBLIC,
       privateSubnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       description: "Group of private subnets",
-      availabilityZones: ["us-east-1a", "us-east-1b", "us-east-1c"],
-      createInternetGateway: true,
-      ecsSecurityGroupName: "ecs-security-group",
-      albSecurityGroupName: "alb-security-group",
-      allowAllOutbound: true,
-      natGateways: 0,
+      availabilityZones: AppConstants.AVAILABILITY_ZONES,
+      createInternetGateway: AppSettings.CREATE_INTERNET_GATEWAY,
+      ecsSecurityGroupName: AppConstants.ECS_SECURITY_GROUP_NAME,
+      albSecurityGroupName: AppConstants.ALB_SECURITY_GROUP_NAME,
+      allowAllOutbound: AppSettings.ALLOW_ALL_OUTBOUND,
+      natGateways: AppConstants.NAT_GATEWAYS,
       serviceRegion: this.region,
       ipAddressType: ec2.VpcEndpointIpAddressType.IPV4,
-      privateDnsEnabled: true,
+      privateDnsEnabled: AppSettings.PRIVATE_DNS_ENABLED,
       onePerAz: this.availabilityZones.length > 1,
     });
 
     const dynamoDB = new DynamoDBConstruct(this, "dynamodb", {
-      tableName: "url-shortener-table",
-      partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
+      tableName: AppConstants.DYNAMODB_TABLE_NAME,
+      partitionKey: { name: AppConstants.DYNAMODB_PARTITION_KEY, type: dynamodb.AttributeType.STRING },
       billing: dynamodb.Billing.onDemand(),
-      pointInTimeRecoveryEnabled: true,
+      pointInTimeRecoveryEnabled: AppSettings.ENABLE_POINT_IN_TIME_RECOVERY,
       removalPolicy: RemovalPolicy.DESTROY
     });
 
     const sqs = new SqsConstruct(this, "sqs", {
-      queueName: "ecsV2EcsProjectSqsQueue",
-      visibilityTimeout: Duration.seconds(10),
-      receiveMessageWaitTime: Duration.seconds(20),
+      queueName: AppConstants.SQS_QUEUE_NAME,
+      visibilityTimeout: Duration.seconds(AppConstants.SQS_VISIBILITY_TIMEOUT_SECONDS),
+      receiveMessageWaitTime: Duration.seconds(AppConstants.SQS_RECEIVE_MESSAGE_WAIT_TIME_SECONDS),
     });
 
     const postgresqlDatabase = new ProgresqlDatabaseConstruct(this, "postgresDatabase", {
-      databaseName: "postgresqlDatabase",
+      databaseName: AppConstants.POSTGRES_DATABASE_NAME,
       version: rds.PostgresEngineVersion.VER_18_1,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
-      port: 5432,
+      port: AppConstants.POSTGRES_PORT,
       vpc: vpc.vpc,
       privateSubnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
-      multiAz: false,
+      multiAz: AppSettings.ENABLE_MULTI_AZ,
       securityGroups: vpc.ecsSecurityGroup,
-      allocatedStorage: 20,
-      maxAllocatedStorage: 100,
+      allocatedStorage: AppConstants.POSTGRES_ALLOCATED_STORAGE,
+      maxAllocatedStorage: AppConstants.POSTGRES_MAX_ALLOCATED_STORAGE,
       storageType: rds.StorageType.GP2,
-      storageEncrypted: true,
-      backupRetention: Duration.days(0),
-      secretName: "postgresql-secret",
+      storageEncrypted: AppSettings.ENABLE_STORAGE_ENCRYPTION,
+      backupRetention: Duration.days(AppConstants.POSTGRES_BACKUP_RETENTION_DAYS),
+      secretName: AppConstants.POSTGRES_SECRET_NAME,
       removalPolicy: RemovalPolicy.DESTROY,
     });
 
      const alb = new ALBConstruct(this, "alb", {
-      loadBalancerName: "ecsv2-loadbalncer",
+      loadBalancerName: AppConstants.ALB_NAME,
       vpc: vpc.vpc,
       publicSubnetType: ec2.SubnetType.PUBLIC,
       internetFacing: true,
       albSecurityGroup: vpc.albSecurityGroup,
       targetType: elbv2.TargetType.IP,
-      crossZoneEnabled: true,
+      crossZoneEnabled: AppSettings.ENABLE_CROSS_ZONE_LB,
       ipAddressType: elbv2.TargetGroupIpAddressType.IPV4,
       protocol: elbv2.ApplicationProtocol.HTTP
     });
 
     const ecs = new EcsConstruct(this, "ecs", {
-      clusterName: "my-ecsv2-cluster",
+      clusterName: AppConstants.ECS_CLUSTER_NAME,
       vpc: vpc.vpc,
       privateSubnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       region: this.region,
       securityGroups: [vpc.ecsSecurityGroup],
       enableFargateCapacityProviders: true,
-      executionRoleName: "ecsv2-url-shortener-execution-role",
-      desiredCount: 2,
-      memoryLimitMiB: 512,
-      cpu: 256,
+      executionRoleName: AppConstants.ECS_EXECUTION_ROLE_NAME,
+      desiredCount: AppConstants.ECS_DESIRED_COUNT,
+      memoryLimitMiB: AppConstants.ECS_MEMORY_LIMIT_MIB,
+      cpu: AppConstants.ECS_CPU,
       dynamodbTable: dynamoDB.dynamoDBTable,
       sqsQueue: sqs.sqsQueue,
       postgresql: postgresqlDatabase.database,
-      assignPublicIp: false,
-      enableExecuteCommand: true,
+      assignPublicIp: AppSettings.ENABLE_PUBLIC_IP,
+      enableExecuteCommand: AppSettings.ENABLE_EXECUTE_COMMAND,
       postgresqlSecret: postgresqlDatabase.database.secret,
       deploymentControllerType: DeploymentControllerType.CODE_DEPLOY,
       alternateTargetGroup: alb.apiGreenTargetGroup,
-      imageTag: this.node.tryGetContext("imageTag")
+      imageTag: this.node.tryGetContext("imageTag"),
+      apiTargetGroup: alb.apiTargetGroup,
+      apiGreenTargetGroup: alb.apiGreenTargetGroup,
+      dashboardTargetGroup: alb.dashboardTargetGroup,
+      dashboardGreenTargetGroup: alb.dashboardGreenTargetGroup
     });
-
-    ecs.ecsApiService.attachToApplicationTargetGroup(
-      alb.apiTargetGroup,
-    );
-
-    ecs.ecsApiService.attachToApplicationTargetGroup(
-      alb.apiGreenTargetGroup,
-    );
-
-    ecs.ecsDashboardService.attachToApplicationTargetGroup(
-      alb.dashboardTargetGroup,
-    );
-
-    ecs.ecsDashboardService.attachToApplicationTargetGroup(
-      alb.dashboardGreenTargetGroup,
-    );
 
     const codeDeploy = new CodeDeployConstruct(this, "CodeDeploy", {
       apiTargetGroupmetric: alb.apiGreenTargetGroup.metrics.unhealthyHostCount(),
       dashboardTargetGroupmetric: alb.dashboardGreenTargetGroup.metrics.unhealthyHostCount(),
-      threshold: 1,
-      evaluationPeriods: 2,
+      threshold: AppConstants.CODEDEPLOY_THRESHOLD,
+      evaluationPeriods: AppConstants.CODEDEPLOY_EVALUATION_PERIODS,
       apiBlueTargetGroup: alb.apiTargetGroup,
       apiGreenTargetGroup: alb.apiGreenTargetGroup,
       dashboardBlueTargetGroup: alb.dashboardTargetGroup,
       dashboardGreenTargetGroup: alb.dashboardGreenTargetGroup,
       listener: alb.listener,
       testListener: alb.testListener,
-      terminationWaitTime: Duration.minutes(5),
+      terminationWaitTime: Duration.minutes(AppConstants.CODEDEPLOY_TERMINATION_WAIT_MINUTES),
       apiService: ecs.ecsApiService,
       dashboardService: ecs.ecsDashboardService,
-      stoppedDeployment: true,
-      failedDeployment: true,
-      deploymentInAlarm: true
+      stoppedDeployment: AppSettings.ENABLE_STOPPED_DEPLOYMENT_NOTIFICATION,
+      failedDeployment: AppSettings.ENABLE_FAILED_DEPLOYMENT_NOTIFICATION,
+      deploymentInAlarm: AppSettings.ENABLE_DEPLOYMENT_IN_ALARM_NOTIFICATION
     })
 
     const waf = new WafContruct(this, "waf", {
-      responseCode: 403,
-      scope: "REGIONAL",
-      name: "ecsWaf",
-      cloudWatchMetricsEnabled: true,
-      metricName: "wafMetric",
-      sampledRequestsEnabled: true,
-      ruleName: "ecsWafRule",
-      priority: 0,
-      countryCodes: ["US", "GB"],
+      responseCode: AppConstants.WAF_RESPONSE_CODE,
+      scope: AppConstants.WAF_SCOPE,
+      name: AppConstants.WAF_NAME,
+      cloudWatchMetricsEnabled: AppSettings.ENABLE_CLOUDWATCH_METRICS,
+      metricName: AppConstants.WAF_METRIC_NAME,
+      sampledRequestsEnabled: AppSettings.ENABLE_SAMPLED_REQUESTS,
+      ruleName: AppConstants.WAF_RULE_NAME,
+      priority: AppConstants.WAF_PRIORITY,
+      countryCodes: AppConstants.WAF_COUNTRY_CODES,
       resourceArn: alb.alb.loadBalancerArn,
     });
 
     const elasticCacheRedis = new ElastiCacheRedis(this, "elasticCacheRedis", {
-      clusterName: "elasticCacheRedis",
-      cacheNodeType: "cache.t4g.micro",
+      clusterName: AppConstants.ELASTICACHE_CLUSTER_NAME,
+      cacheNodeType: AppConstants.ELASTICACHE_NODE_TYPE,
       engine: Engine.redis,
-      autoMinorVersionUpgrade: true,
-      networkType: "ipv4",
+      autoMinorVersionUpgrade: AppSettings.ENABLE_AUTO_MINOR_VERSION_UPGRADE,
+      networkType: AppConstants.ELASTICACHE_NETWORK_TYPE,
       vpcSecurityGroupIds: [vpc.ecsSecurityGroup.securityGroupId],
       subnetIds: vpc.vpc.privateSubnets,
-      description: "List of subnets used for elastic cache redis"
+      description: AppConstants.ELASTICACHE_DESCRIPTION
     });
   }
 }

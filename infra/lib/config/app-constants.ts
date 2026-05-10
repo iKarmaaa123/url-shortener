@@ -1,1 +1,45 @@
-export class AppConstants {}
+export class AppConstants {
+  static readonly ECR_API_REPO_NAME = "api-repository";
+  static readonly ECR_WORKER_REPO_NAME = "worker-repository";
+  static readonly ECR_DASHBOARD_REPO_NAME = "dashboard-repository";
+  static readonly VPC_NAME = "ecs-vpc";
+  static readonly VPC_CIDR = "10.0.0.0/16";
+  static readonly VPC_CIDR_MASK = 24;
+  static readonly PUBLIC_SUBNET_NAME = "ecsPublicSubnets";
+  static readonly PRIVATE_SUBNET_NAME = "ecsPrivateSubnets";
+  static readonly ECS_SECURITY_GROUP_NAME = "ecs-security-group";
+  static readonly ALB_SECURITY_GROUP_NAME = "alb-security-group";
+  static readonly NAT_GATEWAYS = 0;
+  static readonly AVAILABILITY_ZONES = ["us-east-1a", "us-east-1b", "us-east-1c"];
+  static readonly DYNAMODB_TABLE_NAME = "url-shortener-table";
+  static readonly DYNAMODB_PARTITION_KEY = "id";
+  static readonly SQS_QUEUE_NAME = "ecsV2EcsProjectSqsQueue";
+  static readonly SQS_VISIBILITY_TIMEOUT_SECONDS = 10;
+  static readonly SQS_RECEIVE_MESSAGE_WAIT_TIME_SECONDS = 20;
+  static readonly POSTGRES_DATABASE_NAME = "postgresqlDatabase";
+  static readonly POSTGRES_PORT = 5432;
+  static readonly POSTGRES_ALLOCATED_STORAGE = 20;
+  static readonly POSTGRES_MAX_ALLOCATED_STORAGE = 100;
+  static readonly POSTGRES_SECRET_NAME = "postgresql-secret";
+  static readonly POSTGRES_BACKUP_RETENTION_DAYS = 0;
+  static readonly ALB_NAME = "ecsv2-loadbalncer";
+  static readonly ECS_CLUSTER_NAME = "my-ecsv2-cluster";
+  static readonly ECS_EXECUTION_ROLE_NAME = "ecsv2-url-shortener-execution-role";
+  static readonly ECS_DESIRED_COUNT = 2;
+  static readonly ECS_MEMORY_LIMIT_MIB = 512;
+  static readonly ECS_CPU = 256;
+  static readonly WAF_NAME = "ecsWaf";
+  static readonly WAF_RESPONSE_CODE = 403;
+  static readonly WAF_METRIC_NAME = "wafMetric";
+  static readonly WAF_RULE_NAME = "ecsWafRule";
+  static readonly WAF_PRIORITY = 0;
+  static readonly WAF_COUNTRY_CODES = ["US", "GB"];
+  static readonly WAF_SCOPE = "REGIONAL";
+  static readonly ELASTICACHE_CLUSTER_NAME = "elasticCacheRedis";
+  static readonly ELASTICACHE_NODE_TYPE = "cache.t4g.micro";
+  static readonly ELASTICACHE_NETWORK_TYPE = "ipv4";
+  static readonly ELASTICACHE_DESCRIPTION = "List of subnets used for elastic cache redis";
+  static readonly CODEDEPLOY_THRESHOLD = 1;
+  static readonly CODEDEPLOY_EVALUATION_PERIODS = 2;
+  static readonly CODEDEPLOY_TERMINATION_WAIT_MINUTES = 5;
+}
