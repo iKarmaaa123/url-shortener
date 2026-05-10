@@ -182,8 +182,8 @@ export class EcsConstruct extends Construct {
     });
 
     this.ecsApiService.attachToApplicationTargetGroup(props.apiTargetGroup);
-    this.ecsDashboardService.attachToApplicationTargetGroup(props.apiGreenTargetGroup);
-    this.ecsApiService.attachToApplicationTargetGroup(props.dashboardTargetGroup);
+    this.ecsApiService.attachToApplicationTargetGroup(props.apiGreenTargetGroup);
+    this.ecsDashboardService.attachToApplicationTargetGroup(props.dashboardTargetGroup);
     this.ecsDashboardService.attachToApplicationTargetGroup(props.dashboardGreenTargetGroup);
   }
 }
