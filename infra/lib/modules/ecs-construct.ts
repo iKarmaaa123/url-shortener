@@ -3,7 +3,7 @@ import { IDatabaseInstance } from "aws-cdk-lib/aws-rds";
 import { IVpc, SubnetSelection, ISecurityGroup, SubnetType } from "aws-cdk-lib/aws-ec2";
 import { IApplicationTargetGroup, ITargetGroup, ApplicationListener, ListenerCondition, ListenerAction, ApplicationListenerRule } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as ecs from "aws-cdk-lib/aws-ecs";
-import * as iam from "aws-cdk-lib/aws-iam";
+import { Role } from "aws-cdk-lib/aws-iam";
 import * as sm from "aws-cdk-lib/aws-secretsmanager";
 import { IQueue } from "aws-cdk-lib/aws-sqs";
 import { Construct } from "constructs";
@@ -13,11 +13,10 @@ export interface EcsConstructProps {
   clusterName?: string;
   region: string;
   vpc?: IVpc;
-  privateSubnetType: SubnetType;
+  privateSubnetType: SubnetType; 
   vpcSubnets?: SubnetSelection;
   securityGroups?: ISecurityGroup[];
   enableFargateCapacityProviders?: boolean;
-  executionRoleName?: string;
   dynamodbTable: ITableV2;
   sqsQueue: IQueue;
   postgresql: IDatabaseInstance;
@@ -26,11 +25,18 @@ export interface EcsConstructProps {
   cpu?: number;
   assignPublicIp?: boolean;
   enableExecuteCommand?: boolean;
-  targetGroup?: IApplicationTargetGroup;
+  apiTargetGroup: IApplicationTargetGroup;
+  apiGreenTargetGroup: IApplicationTargetGroup;
+  dashboardTargetGroup: IApplicationTargetGroup;
+  dashboardGreenTargetGroup: IApplicationTargetGroup;
   postgresqlSecret?: sm.ISecret
   alternateTargetGroup: ITargetGroup;
   deploymentControllerType: ecs.DeploymentControllerType;
   imageTag?: string;
+  executionRole?: Role,
+  apiTaskRole?: Role,
+  workerTaskRole?: Role
+  dashboardTaskRole?: Role
 }
 
 export class EcsConstruct extends Construct {
@@ -45,56 +51,12 @@ export class EcsConstruct extends Construct {
     const ecrWorkerRepo = Repository.fromRepositoryName(this, "workerRepositoryName", "worker-repository")
     const ecrDashboardRepo = Repository.fromRepositoryName(this, "dashboardRepositoryName", "dashboard-repository")
 
-    const executionRole = new iam.Role(this, "executionRole", {
-      roleName: props.executionRoleName,
-      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName(
-          "service-role/AmazonECSTaskExecutionRolePolicy",
-        ),
-        iam.ManagedPolicy.fromAwsManagedPolicyName(
-          "AWSSecretsManagerClientReadOnlyAccess"
-        ),
-        iam.ManagedPolicy.fromAwsManagedPolicyName(
-          "AmazonECSInfrastructureRolePolicyForLoadBalancers"
-        )
-      ],
-    });
-
-    const apiTaskRole = new iam.Role(this, "apiTaskRole", {
-      roleName: "apiTaskRole",
-      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-    });
-
-    const workerTaskRole = new iam.Role(this, "workerTaskRole", {
-      roleName: "workerTaskRole",
-      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-    });
-
-    const dashboardTaskRole = new iam.Role(this, "dashboardTaskRole", {
-      roleName: "dashboardTaskRole",
-      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
-    });
-
-    const dynamoDBPolicy = new iam.PolicyStatement({
-      actions: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:UpdateItem"],
-      resources: [props.dynamodbTable.tableArn],
-    });
-
-    const sqsPolicy = new iam.PolicyStatement({
-      actions: ["sqs:ReceiveMessage", "sqs:SendMessage", "sqs:DeleteMessage"],
-      resources: [props.sqsQueue.queueArn],
-    });
 
     if (!props.postgresqlSecret) {
       throw new Error("postgresqlSecret not defined")
     }
 
     const secret = props.postgresqlSecret
-
-    apiTaskRole.addToPrincipalPolicy(dynamoDBPolicy);
-    apiTaskRole.addToPrincipalPolicy(sqsPolicy)
-    workerTaskRole.addToPrincipalPolicy(sqsPolicy);
     
     const cluster = new ecs.Cluster(this, "Cluster", {
       clusterName: props.clusterName,
@@ -105,8 +67,8 @@ export class EcsConstruct extends Construct {
     const apiTaskDefinition = new ecs.FargateTaskDefinition(this, "apiTaskDefinition", {
       memoryLimitMiB: props.memoryLimitMiB,
       cpu: props.cpu,
-      executionRole: executionRole,
-      taskRole: apiTaskRole,
+      executionRole: props.executionRole,
+      taskRole: props.apiTaskRole,
     });
 
     apiTaskDefinition.addContainer("apiTaskDefinition", {
@@ -128,8 +90,8 @@ export class EcsConstruct extends Construct {
     const workerTaskDefinition = new ecs.FargateTaskDefinition(this, "workerTaskDefinition", {
       memoryLimitMiB: props.memoryLimitMiB,
       cpu: props.cpu,
-      executionRole: executionRole,
-      taskRole: workerTaskRole,
+      executionRole: props.executionRole,
+      taskRole: props.workerTaskRole,
     });
 
     workerTaskDefinition.addContainer("workerTaskDefinition", {
@@ -153,8 +115,8 @@ export class EcsConstruct extends Construct {
     const dashboardTaskDefinition = new ecs.FargateTaskDefinition(this, "dashboardTaskDefinition", {
       memoryLimitMiB: props.memoryLimitMiB,
       cpu: props.cpu,
-      executionRole: executionRole,
-      taskRole: dashboardTaskRole,
+      executionRole: props.executionRole,
+      taskRole: props.dashboardTaskRole,
     });
 
      dashboardTaskDefinition.addContainer("dashboardTaskDefinition", {
@@ -215,5 +177,10 @@ export class EcsConstruct extends Construct {
         type: props.deploymentControllerType
       }
     });
+
+    this.ecsApiService.attachToApplicationTargetGroup(props.apiTargetGroup);
+    this.ecsDashboardService.attachToApplicationTargetGroup(props.apiGreenTargetGroup);
+    this.ecsApiService.attachToApplicationTargetGroup(props.dashboardTargetGroup);
+    this.ecsDashboardService.attachToApplicationTargetGroup(props.dashboardGreenTargetGroup);
   }
 }

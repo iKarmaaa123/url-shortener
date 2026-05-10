@@ -14,6 +14,7 @@ import { SqsConstruct } from "./modules/sqs-construct";
 import { ProgresqlDatabaseConstruct } from "./modules/postgresql-construct";
 import { ElastiCacheRedis, Engine } from "./modules/elasticacheredis-construct";
 import { CodeDeployConstruct } from "./modules/codedeploy-construct";
+import { IamConstruct } from "./modules/iam-construct";
 import * as rds from "aws-cdk-lib/aws-rds";
 import { AppConstants } from "./config/app-constants";
 import { AppSettings } from "./config/app-settings";
@@ -87,6 +88,13 @@ export class EcsStack extends Stack {
       protocol: elbv2.ApplicationProtocol.HTTP
     });
 
+    const iam = new IamConstruct(this, "iam", {
+      executionRoleName: AppConstants.ECS_EXECUTION_ROLE_NAME,
+      dynamodbTable: dynamoDB.dynamoDBTable,
+      sqsQueue: sqs.sqsQueue 
+    }
+    )
+
     const ecs = new EcsConstruct(this, "ecs", {
       clusterName: AppConstants.ECS_CLUSTER_NAME,
       vpc: vpc.vpc,
@@ -94,7 +102,6 @@ export class EcsStack extends Stack {
       region: this.region,
       securityGroups: [vpc.ecsSecurityGroup],
       enableFargateCapacityProviders: true,
-      executionRoleName: AppConstants.ECS_EXECUTION_ROLE_NAME,
       desiredCount: AppConstants.ECS_DESIRED_COUNT,
       memoryLimitMiB: AppConstants.ECS_MEMORY_LIMIT_MIB,
       cpu: AppConstants.ECS_CPU,
@@ -110,7 +117,11 @@ export class EcsStack extends Stack {
       apiTargetGroup: alb.apiTargetGroup,
       apiGreenTargetGroup: alb.apiGreenTargetGroup,
       dashboardTargetGroup: alb.dashboardTargetGroup,
-      dashboardGreenTargetGroup: alb.dashboardGreenTargetGroup
+      dashboardGreenTargetGroup: alb.dashboardGreenTargetGroup,
+      executionRole: iam.executionRole,
+      apiTaskRole: iam.apiTaskRole,
+      workerTaskRole: iam.workerTaskRole,
+      dashboardTaskRole: iam.dashboardTaskRole
     });
 
     const codeDeploy = new CodeDeployConstruct(this, "CodeDeploy", {
