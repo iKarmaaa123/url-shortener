@@ -155,6 +155,7 @@ export class VpcConstruct extends Construct {
     this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8080));
     this.ecsSecurityGroup.addIngressRule(this.albSecurityGroup, ec2.Port.tcp(8081));
     this.ecsSecurityGroup.addIngressRule(this.ecsSecurityGroup, ec2.Port.tcp(5432));
+    this.ecsSecurityGroup.addIngressRule(this.ecsSecurityGroup, ec2.Port.tcp(6379));
     this.albSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(80));
   }
 }
