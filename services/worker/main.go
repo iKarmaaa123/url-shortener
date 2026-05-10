@@ -167,7 +167,7 @@ func pollSQS(ctx context.Context, queueURL string) {
 				if err := deleteSQSMessage(queueURL, msg); err != nil {
 					log.Printf("Failed to delete message: %v", err)
 				} else {
-					log.Printf("Processed and deleted click event")
+					log.Printf("Processed click event")
 				}
 			}
 			if len(messages) == 0 {
