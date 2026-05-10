@@ -95,7 +95,7 @@ export class EcsStack extends Stack {
       autoMinorVersionUpgrade: AppSettings.ENABLE_AUTO_MINOR_VERSION_UPGRADE,
       networkType: AppConstants.ELASTICACHE_NETWORK_TYPE,
       vpcSecurityGroupIds: [vpc.ecsSecurityGroup.securityGroupId],
-      subnetIds: vpc.vpc.privateSubnets,
+      subnetIds: vpc.vpc.privateSubnets.map(subnets => subnets.subnetId),
       description: AppConstants.ELASTICACHE_DESCRIPTION
     });
 
