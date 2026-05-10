@@ -52,7 +52,6 @@ export class EcsConstruct extends Construct {
     const ecrWorkerRepo = Repository.fromRepositoryName(this, "workerRepositoryName", "worker-repository")
     const ecrDashboardRepo = Repository.fromRepositoryName(this, "dashboardRepositoryName", "dashboard-repository")
 
-
     if (!props.postgresqlSecret) {
       throw new Error("postgresqlSecret not defined")
     }

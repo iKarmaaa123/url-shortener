@@ -52,10 +52,14 @@ jobs:
         include:
         - service: api-image
           ecr_repo: API_ECR_REPOSITORY
+          directory: ./services/api
         - service: worker-image
           ecr_repo: WORKER_ECR_REPOSITORY
+          directory: ./services/worker
         - service: dashboard-image
           ecr_repo: DASHBOARD_ECR_REPOSITORY
+          directory: ./services/dashboard
+
 
     steps:
     - name: Checkout repository
@@ -63,7 +67,7 @@ jobs:
 
     - name: Building docker images
       run: |
-        docker build -t ${{ matrix.service }}:${{ github.sha }} ./services/api
+        docker build -t ${{ matrix.service }}:${{ github.sha }} ${{ matrix.directory }}
     
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
