@@ -20,6 +20,8 @@ export interface ElastiCacheRedisProps {
 }
 
 export class ElastiCacheRedis extends Construct {
+  public readonly cacheCluster: CfnCacheCluster;
+
   constructor(scope: Construct, id: string, props: ElastiCacheRedisProps) {
     super(scope, id);
 
@@ -28,7 +30,7 @@ export class ElastiCacheRedis extends Construct {
       subnetIds: props.subnetIds
     });
 
-    new CfnCacheCluster(this, "elasticCacheCluster", {
+    this.cacheCluster = new CfnCacheCluster(this, "elasticCacheCluster", {
       clusterName: props.clusterName,
       cacheNodeType: props.cacheNodeType,
       engine: props.engine,

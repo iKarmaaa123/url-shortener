@@ -37,6 +37,7 @@ export interface EcsConstructProps {
   apiTaskRole?: Role,
   workerTaskRole?: Role
   dashboardTaskRole?: Role
+  redisEndpoint?: string;
 }
 
 export class EcsConstruct extends Construct {
@@ -122,6 +123,9 @@ export class EcsConstruct extends Construct {
      dashboardTaskDefinition.addContainer("dashboardTaskDefinition", {
       containerName: "dashboardContainer",
       image: ecs.ContainerImage.fromEcrRepository(ecrDashboardRepo, props.imageTag),
+      environment: {
+        REDIS_ENDPOINT: props.redisEndpoint || "",
+      },
       portMappings: [
         {
           containerPort: 8081,

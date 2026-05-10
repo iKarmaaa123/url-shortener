@@ -88,6 +88,17 @@ export class EcsStack extends Stack {
       protocol: elbv2.ApplicationProtocol.HTTP
     });
 
+    const elasticCacheRedis = new ElastiCacheRedis(this, "elasticCacheRedis", {
+      clusterName: AppConstants.ELASTICACHE_CLUSTER_NAME,
+      cacheNodeType: AppConstants.ELASTICACHE_NODE_TYPE,
+      engine: Engine.redis,
+      autoMinorVersionUpgrade: AppSettings.ENABLE_AUTO_MINOR_VERSION_UPGRADE,
+      networkType: AppConstants.ELASTICACHE_NETWORK_TYPE,
+      vpcSecurityGroupIds: [vpc.ecsSecurityGroup.securityGroupId],
+      subnetIds: vpc.vpc.privateSubnets,
+      description: AppConstants.ELASTICACHE_DESCRIPTION
+    });
+
     const iam = new IamConstruct(this, "iam", {
       executionRoleName: AppConstants.ECS_EXECUTION_ROLE_NAME,
       dynamodbTable: dynamoDB.dynamoDBTable,
@@ -121,7 +132,8 @@ export class EcsStack extends Stack {
       executionRole: iam.executionRole,
       apiTaskRole: iam.apiTaskRole,
       workerTaskRole: iam.workerTaskRole,
-      dashboardTaskRole: iam.dashboardTaskRole
+      dashboardTaskRole: iam.dashboardTaskRole,
+      redisEndpoint: elasticCacheRedis.cacheCluster.attrRedisEndpointAddress + ":" + elasticCacheRedis.cacheCluster.attrRedisEndpointPort
     });
 
     const codeDeploy = new CodeDeployConstruct(this, "CodeDeploy", {
@@ -154,17 +166,6 @@ export class EcsStack extends Stack {
       priority: AppConstants.WAF_PRIORITY,
       countryCodes: AppConstants.WAF_COUNTRY_CODES,
       resourceArn: alb.alb.loadBalancerArn,
-    });
-
-    const elasticCacheRedis = new ElastiCacheRedis(this, "elasticCacheRedis", {
-      clusterName: AppConstants.ELASTICACHE_CLUSTER_NAME,
-      cacheNodeType: AppConstants.ELASTICACHE_NODE_TYPE,
-      engine: Engine.redis,
-      autoMinorVersionUpgrade: AppSettings.ENABLE_AUTO_MINOR_VERSION_UPGRADE,
-      networkType: AppConstants.ELASTICACHE_NETWORK_TYPE,
-      vpcSecurityGroupIds: [vpc.ecsSecurityGroup.securityGroupId],
-      subnetIds: vpc.vpc.privateSubnets,
-      description: AppConstants.ELASTICACHE_DESCRIPTION
     });
   }
 }
