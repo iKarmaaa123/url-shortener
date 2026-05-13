@@ -13,11 +13,9 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/redis/go-redis/v9"
 )
 
 var db *sql.DB
-var rdb *redis.Client
 var ctx = context.Background()
 
 func main() {
@@ -60,26 +58,6 @@ func main() {
 	db.SetMaxIdleConns(3)
 	waitForDB()
 
-	// Initialize Redis connection
-	redisEndpoint := os.Getenv("REDIS_ENDPOINT")
-	if redisEndpoint != "" {
-		rdb = redis.NewClient(&redis.Options{
-			Addr:     redisEndpoint,
-			Password: "", // ElastiCache Redis typically doesn't use password in VPC
-			DB:       0,
-		})
-		
-		// Test Redis connection
-		if err := rdb.Ping(ctx).Err(); err != nil {
-			log.Printf("Warning: Failed to connect to Redis: %v. Continuing without cache.", err)
-			rdb = nil
-		} else {
-			log.Println("Successfully connected to Redis!")
-		}
-	} else {
-		log.Println("REDIS_ENDPOINT not set, running without cache")
-	}
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", handleHealth)
 	mux.HandleFunc("/summary", handleSummary)
@@ -94,45 +72,20 @@ func main() {
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
 	status := "ok"
-	redisStatus := "not_configured"
 	
 	if err := db.Ping(); err != nil {
 		status = "unhealthy"
 		w.WriteHeader(http.StatusServiceUnavailable)
 	}
 	
-	// Check Redis connection if available
-	if rdb != nil {
-		if err := rdb.Ping(ctx).Err(); err != nil {
-			redisStatus = "unhealthy"
-		} else {
-			redisStatus = "ok"
-		}
-	}
-	
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{
-		"status":       status,
-		"service":      "dashboard",
-		"redis_status": redisStatus,
+		"status":  status,
+		"service": "dashboard",
 	})
 }
 
 func handleSummary(w http.ResponseWriter, r *http.Request) {
-	cacheKey := "dashboard:summary"
-	
-	// Try to get from Redis cache first
-	if rdb != nil {
-		cached, err := rdb.Get(ctx, cacheKey).Result()
-		if err == nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.Header().Set("X-Cache", "HIT")
-			w.Write([]byte(cached))
-			return
-		}
-	}
-
-	// Cache miss - query database
 	today := time.Now().UTC().Truncate(24 * time.Hour)
 
 	var totalURLs, totalClicks, clicksToday int
@@ -149,16 +102,8 @@ func handleSummary(w http.ResponseWriter, r *http.Request) {
 		"clicks_today": clicksToday,
 	}
 
-	resultJSON, _ := json.Marshal(result)
-
-	// Store in Redis cache with 30 second TTL
-	if rdb != nil {
-		rdb.Set(ctx, cacheKey, resultJSON, 30*time.Second)
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("X-Cache", "MISS")
-	w.Write(resultJSON)
+	json.NewEncoder(w).Encode(result)
 }
 
 func handleURLStats(w http.ResponseWriter, r *http.Request) {
@@ -168,20 +113,6 @@ func handleURLStats(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cacheKey := fmt.Sprintf("dashboard:url:%s", code)
-	
-	// Try to get from Redis cache first
-	if rdb != nil {
-		cached, err := rdb.Get(ctx, cacheKey).Result()
-		if err == nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.Header().Set("X-Cache", "HIT")
-			w.Write([]byte(cached))
-			return
-		}
-	}
-
-	// Cache miss - query database
 	var url string
 	var clicks int
 	var createdAt string
@@ -224,16 +155,8 @@ func handleURLStats(w http.ResponseWriter, r *http.Request) {
 		"hourly":       hourly,
 	}
 
-	resultJSON, _ := json.Marshal(result)
-
-	// Store in Redis cache with 2 minute TTL
-	if rdb != nil {
-		rdb.Set(ctx, cacheKey, resultJSON, 2*time.Minute)
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("X-Cache", "MISS")
-	w.Write(resultJSON)
+	json.NewEncoder(w).Encode(result)
 }
 
 func handleRecent(w http.ResponseWriter, r *http.Request) {
@@ -266,20 +189,6 @@ func handleRecent(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleTop(w http.ResponseWriter, r *http.Request) {
-	cacheKey := "dashboard:top"
-	
-	// Try to get from Redis cache first
-	if rdb != nil {
-		cached, err := rdb.Get(ctx, cacheKey).Result()
-		if err == nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.Header().Set("X-Cache", "HIT")
-			w.Write([]byte(cached))
-			return
-		}
-	}
-
-	// Cache miss - query database
 	rows, err := db.Query(
 		"SELECT id, url, clicks FROM urls ORDER BY clicks DESC LIMIT 10",
 	)
@@ -302,16 +211,8 @@ func handleTop(w http.ResponseWriter, r *http.Request) {
 		top = append(top, t)
 	}
 
-	resultJSON, _ := json.Marshal(top)
-
-	// Store in Redis cache with 1 minute TTL
-	if rdb != nil {
-		rdb.Set(ctx, cacheKey, resultJSON, 60*time.Second)
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("X-Cache", "MISS")
-	w.Write(resultJSON)
+	json.NewEncoder(w).Encode(top)
 }
 
 func httpError(w http.ResponseWriter, msg string, code int) {

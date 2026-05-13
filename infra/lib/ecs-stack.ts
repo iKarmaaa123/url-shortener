@@ -103,8 +103,7 @@ export class EcsStack extends Stack {
       executionRoleName: AppConstants.ECS_EXECUTION_ROLE_NAME,
       dynamodbTable: dynamoDB.dynamoDBTable,
       sqsQueue: sqs.sqsQueue 
-    }
-    )
+    })
 
     const ecs = new EcsConstruct(this, "ecs", {
       clusterName: AppConstants.ECS_CLUSTER_NAME,

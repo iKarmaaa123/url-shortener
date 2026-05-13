@@ -78,6 +78,7 @@ export class EcsConstruct extends Construct {
         SQS_QUEUE_URL: props.sqsQueue.queueUrl,
         TABLE_NAME: props.dynamodbTable.tableName,
         AWS_DEFAULT_REGION: props.region,
+        REDIS_ENDPOINT: props.redisEndpoint || ""
       },
       portMappings: [
         {
@@ -122,9 +123,6 @@ export class EcsConstruct extends Construct {
      dashboardTaskDefinition.addContainer("dashboardTaskDefinition", {
       containerName: "dashboardContainer",
       image: ecs.ContainerImage.fromEcrRepository(ecrDashboardRepo, props.imageTag),
-      environment: {
-        REDIS_ENDPOINT: props.redisEndpoint || "",
-      },
       portMappings: [
         {
           containerPort: 8081,
