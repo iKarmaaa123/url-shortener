@@ -103,13 +103,13 @@ In order to follow this project, you will need to have the following installed:
 
 - An AWS Account with an IAM user (do not use the root account) - [Create An Account Here](https://aws.amazon.com/free/?trk=ce1f55b8-6da8-4aa2-af36-3f11e9a449ae&sc_channel=ps&ef_id=Cj0KCQjw782_BhDjARIsABTv_JCWZitQyH0tU_lYElDDQ9HdBabDxB-tKSgYDsRiU0N_XqiVVpjvBTUaAmR7EALw_wcB:G:s&s_kwcid=AL!4422!3!433803621002!e!!g!!aws%20sign%20up!9762827897!98496538743&gclid=Cj0KCQjw782_BhDjARIsABTv_JCWZitQyH0tU_lYElDDQ9HdBabDxB-tKSgYDsRiU0N_XqiVVpjvBTUaAmR7EALw_wcB&all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all)
 
-- Docker - [Download & Install](https://www.docker.com/get-started/)
+- ✅ Docker - [Download & Install](https://www.docker.com/get-started/)
 
-- Node.js & npm - [Download & Install](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- ✅Node.js & npm - [Download & Install](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
-- Typescript - [Download & Install](https://www.npmjs.com/package/typescript)
+- ✅ Typescript - [Download & Install](https://www.npmjs.com/package/typescript)
 
-- AWS CDK - [Download & Install](https://docs.aws.amazon.com/cdk/v2/guide/getting-started.html)
+- ✅ AWS CDK - [Download & Install](https://docs.aws.amazon.com/cdk/v2/guide/getting-started.html)
 
 <h2> Running the URL Shortener Service Locally </h2>
 
@@ -180,9 +180,9 @@ Now that we've got the service working locally, it's time to get this service ru
 
 - **Docker workflow** - Builds Docker images and pushes them to their respective ECR repositories.
 - **CDK Diff workflow** - Runs `cdk diff` to show you what will be deployed.
-- **CDK Deploy workflow** - Deploys the resources.
-- **CDK Destroy workflow** - Destroys the resources.
- 
+- **CDK Deploy workflow** - Runs `cdk deploy` to deploys the resources.
+- **CDK Destroy workflow** - Runs `cdk destroy` to destroy the resources.
+
 Before you run any of these workflows, be sure to have an OIDC IAM role set up to allow your GitHub Actions runner to authenticate with AWS.
 
 After you have run these workflows, go ahead and use the ALB DNS name with the paths used above to shorten your URL, retrieve the original URL, check the number of clicks, and view the most recent click events.
