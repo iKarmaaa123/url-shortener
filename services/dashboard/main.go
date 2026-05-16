@@ -37,7 +37,7 @@ func main() {
 		log.Fatalf("Failed to parse DB_SECRET: %v", err)
 	}
 
-	log.Printf("Connecting to database at %s:%d (user: %s, dbname: %s)", dbSecret.Host, dbSecret.Port, dbSecret.Username, dbSecret.DBName)
+	log.Printf("Connecting to database")
 
 	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=require",
 		url.QueryEscape(dbSecret.Username),
