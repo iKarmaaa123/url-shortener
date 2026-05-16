@@ -191,7 +191,7 @@ After you have run these workflows, go ahead and use the ALB DNS name with the p
 
 You may have noticed that this project uses both DynamoDB and PostgreSQL databases: 
  
-- **DynamoDB** is used for storing short IDs and original URLs. DynamoDB was selected due to it being serverless, meaning there is no underlying server infrastructure to manage. This comes with several benefits such as automatic scaling and high availability when the number of storing and getting url shorten requests increases. 
+- **DynamoDB** is used for storing short IDs and original URLs. DynamoDB was selected due to it being serverless, meaning there is no underlying server infrastructure to manage. This comes with several benefits such as automatic scaling and high availability when the number of POST and GET http requests increases. 
  
 - **PostgreSQL** is used for the dashboard due to its excellent capabilities at aggregating and joining data for queries such as retrieving recent click events or calculating the total click events that have been made.
 
