@@ -41,7 +41,7 @@ export class EcsStack extends Stack {
       serviceRegion: this.region,
       ipAddressType: ec2.VpcEndpointIpAddressType.IPV4,
       privateDnsEnabled: AppSettings.PRIVATE_DNS_ENABLED,
-      onePerAz: this.availabilityZones.length > 1,
+      maxAzs: this.availabilityZones.length,
     });
 
     const dynamoDB = new DynamoDBConstruct(this, "dynamodb", {
