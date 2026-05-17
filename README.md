@@ -10,6 +10,9 @@ This README serves as a guide to help you provision the infrastructure for the U
 
 Below is the architectural diagram of the infrastructure we'll be setting up in this project:
 
+![architectural diagram](images/ecs-project-v2.drawio.png)
+
+
 <h2> Directory Structure </h2>
 
 Below is an overview of the directory structure for this project:
@@ -144,7 +147,7 @@ curl -X POST "localhost:8080/shorten" -d '{"url": "example.com"}'
 
 You should get the following if you've run this command successfully:
 
-![alt text](images/shorten-url.png)
+![shortener response](images/shorten-url.png)
 
 The shortened ID and original URL are written to DynamoDB as an item, with the shortened ID acting as the partition key and the original URL as an attribute value.
 
@@ -164,13 +167,13 @@ To retrieve information from the dashboard, go ahead and run either of these com
 curl -X GET "localhost:8080/summary"
 ```
 
-![alt text](images/summary.png)
+![summary response](images/summary.png)
 
 ```hcl
 curl -X GET "localhost:8080/recent"
 ``` 
 
-![alt text](images/recent.png)
+![recent response](images/recent.png)
 
 You have successfully run the entire URL shortener service end-to-end on your local machine.
 
