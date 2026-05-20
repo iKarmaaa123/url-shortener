@@ -21,6 +21,11 @@ Below is an overview of the directory structure for this project:
 .
 |-- README.md
 |-- docker-compose.yaml
+|-- images
+|   |-- ecs-project-v2.drawio.png
+|   |-- recent.png
+|   |-- shorten-url.png
+|   `-- summary.png
 |-- infra
 |   |-- -apporove
 |   |   |-- asset.7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200
@@ -57,23 +62,26 @@ Below is an overview of the directory structure for this project:
 |   |   `-- vpcStack.template.json
 |   |-- jest.config.js
 |   |-- lib
+|   |   |-- compute-stack.ts
 |   |   |-- config
 |   |   |   |-- app-constants.ts
 |   |   |   `-- app-settings.ts
+|   |   |-- database-stack.ts
 |   |   |-- ecr-stack.ts
-|   |   |-- ecs-stack.ts
-|   |   `-- modules
-|   |       |-- alb-construct.ts
-|   |       |-- codedeploy-construct.ts
-|   |       |-- dynamodb-construct.ts
-|   |       |-- ecr-construct.ts
-|   |       |-- ecs-construct.ts
-|   |       |-- elasticacheredis-construct.ts
-|   |       |-- iam-construct.ts
-|   |       |-- postgresql-construct.ts
-|   |       |-- sqs-construct.ts
-|   |       |-- vpc-construct.ts
-|   |       `-- waf-construct.ts
+|   |   |-- messaging-stack.ts
+|   |   |-- modules
+|   |   |   |-- alb-construct.ts
+|   |   |   |-- codedeploy-construct.ts
+|   |   |   |-- dynamodb-construct.ts
+|   |   |   |-- ecr-construct.ts
+|   |   |   |-- ecs-construct.ts
+|   |   |   |-- elasticacheredis-construct.ts
+|   |   |   |-- iam-construct.ts
+|   |   |   |-- postgresql-construct.ts
+|   |   |   |-- sqs-construct.ts
+|   |   |   |-- vpc-construct.ts
+|   |   |   `-- waf-construct.ts
+|   |   `-- networking-stack.ts
 |   |-- package-lock.json
 |   |-- package.json
 |   |-- test
