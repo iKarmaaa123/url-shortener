@@ -1,11 +1,12 @@
 import * as cdk from "aws-cdk-lib";
+import { Stack } from "aws-cdk-lib"
 import { TagMutability } from "aws-cdk-lib/aws-ecr";
 import { Construct } from "constructs";
 import { EcrConstruct } from "./modules/ecr-construct";
 import { AppConstants } from "./config/app-constants";
 import { AppSettings } from "./config/app-settings";
 
-export class EcrStack extends cdk.Stack {
+export class EcrStack extends Stack {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
