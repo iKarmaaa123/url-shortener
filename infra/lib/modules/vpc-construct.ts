@@ -6,7 +6,6 @@ export interface VpcConstructProps {
   vpcName?: string;
   ipAddresses?: ec2.IIpAddresses;
   availabilityZones?: string[];
-  maxAzs?: number;
   subnetConfiguration?: ec2.SubnetConfiguration[];
   cidrMask?: number;
   publicSubnetName: string;
@@ -42,7 +41,6 @@ export class VpcConstruct extends Construct {
       vpcName: props.vpcName,
       createInternetGateway: props.createInternetGateway,
       availabilityZones: props.availabilityZones,
-      maxAzs: props.maxAzs,
       natGateways: props.natGateways,
       subnetConfiguration: [
         {

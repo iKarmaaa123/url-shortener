@@ -8,14 +8,14 @@ import { ProgresqlDatabaseConstruct } from "./modules/postgresql-construct";
 import { ElastiCacheRedis, Engine } from "./modules/elasticacheredis-construct";
 import { AppConstants } from "./config/app-constants";
 import { AppSettings } from "./config/app-settings";
-import { NetworkStack } from "./network-stack";
+import { NetworkingStack } from "./networking-stack";
 
 export class DatabaseStack extends Stack {
   public readonly dynamoDBTable: ITableV2;
   public readonly postgresDatabase: rds.DatabaseInstance;
   public readonly redisEndpoint: string;
 
-  constructor(scope: Construct, id: string, networkStack: NetworkStack) {
+  constructor(scope: Construct, id: string, networkingStack: NetworkingStack) {
     super(scope, id);
 
     const dynamoDB = new DynamoDBConstruct(this, "dynamodb", {
@@ -28,16 +28,15 @@ export class DatabaseStack extends Stack {
 
     this.dynamoDBTable = dynamoDB.dynamoDBTable;
 
-    // PostgreSQL Database
     const postgresqlDatabase = new ProgresqlDatabaseConstruct(this, "postgresDatabase", {
       databaseName: AppConstants.POSTGRES_DATABASE_NAME,
       version: rds.PostgresEngineVersion.VER_18_1,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3, ec2.InstanceSize.MICRO),
       port: AppConstants.POSTGRES_PORT,
-      vpc: networkStack.vpc,
+      vpc: networkingStack.vpc,
       privateSubnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       multiAz: AppSettings.ENABLE_MULTI_AZ,
-      securityGroups: networkStack.ecsSecurityGroup,
+      securityGroups: networkingStack.ecsSecurityGroup,
       allocatedStorage: AppConstants.POSTGRES_ALLOCATED_STORAGE,
       maxAllocatedStorage: AppConstants.POSTGRES_MAX_ALLOCATED_STORAGE,
       storageType: rds.StorageType.GP2,
@@ -49,15 +48,14 @@ export class DatabaseStack extends Stack {
 
     this.postgresDatabase = postgresqlDatabase.database;
 
-    // ElastiCache Redis
     const elasticCacheRedis = new ElastiCacheRedis(this, "elasticCacheRedis", {
       clusterName: AppConstants.ELASTICACHE_CLUSTER_NAME,
       cacheNodeType: AppConstants.ELASTICACHE_NODE_TYPE,
       engine: Engine.redis,
       autoMinorVersionUpgrade: AppSettings.ENABLE_AUTO_MINOR_VERSION_UPGRADE,
       networkType: AppConstants.ELASTICACHE_NETWORK_TYPE,
-      vpcSecurityGroupIds: [networkStack.ecsSecurityGroup.securityGroupId],
-      subnetIds: networkStack.vpc.privateSubnets.map(subnets => subnets.subnetId),
+      vpcSecurityGroupIds: [networkingStack.ecsSecurityGroup.securityGroupId],
+      subnetIds: networkingStack.vpc.privateSubnets.map(subnets => subnets.subnetId),
       description: AppConstants.ELASTICACHE_DESCRIPTION
     });
 

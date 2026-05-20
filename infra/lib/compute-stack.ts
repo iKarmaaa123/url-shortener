@@ -10,21 +10,21 @@ import { CodeDeployConstruct } from "./modules/codedeploy-construct";
 import { IamConstruct } from "./modules/iam-construct";
 import { AppConstants } from "./config/app-constants";
 import { AppSettings } from "./config/app-settings";
-import { NetworkStack } from "./network-stack";
+import { NetworkingStack } from "./networking-stack";
 import { DatabaseStack } from "./database-stack";
 import { MessagingStack } from "./messaging-stack";
 
 
 export class ComputeStack extends Stack {
-  constructor(scope: Construct, id: string, networkStack: NetworkStack, databaseStack: DatabaseStack, messageStack: MessagingStack) {
+  constructor(scope: Construct, id: string, networkingStack: NetworkingStack, databaseStack: DatabaseStack, messagingStack: MessagingStack) {
     super(scope, id);
 
     const alb = new ALBConstruct(this, "alb", {
       loadBalancerName: AppConstants.ALB_NAME,
-      vpc: networkStack.vpc,
+      vpc: networkingStack.vpc,
       publicSubnetType: ec2.SubnetType.PUBLIC,
       internetFacing: true,
-      albSecurityGroup: networkStack.albSecurityGroup,
+      albSecurityGroup: networkingStack.albSecurityGroup,
       targetType: elbv2.TargetType.IP,
       crossZoneEnabled: AppSettings.ENABLE_CROSS_ZONE_LB,
       ipAddressType: elbv2.TargetGroupIpAddressType.IPV4,
@@ -34,21 +34,21 @@ export class ComputeStack extends Stack {
     const iam = new IamConstruct(this, "iam", {
       executionRoleName: AppConstants.ECS_EXECUTION_ROLE_NAME,
       dynamodbTable: databaseStack.dynamoDBTable,
-      sqsQueue: messageStack.sqsQueue 
+      sqsQueue: messagingStack.sqsQueue 
     });
 
     const ecs = new EcsConstruct(this, "ecs", {
       clusterName: AppConstants.ECS_CLUSTER_NAME,
-      vpc: networkStack.vpc,
+      vpc: networkingStack.vpc,
       privateSubnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
       region: this.region,
-      securityGroups: [networkStack.ecsSecurityGroup],
+      securityGroups: [networkingStack.ecsSecurityGroup],
       enableFargateCapacityProviders: true,
       desiredCount: AppConstants.ECS_DESIRED_COUNT,
       memoryLimitMiB: AppConstants.ECS_MEMORY_LIMIT_MIB,
       cpu: AppConstants.ECS_CPU,
       dynamodbTable: databaseStack.dynamoDBTable,
-      sqsQueue: messageStack.sqsQueue,
+      sqsQueue: messagingStack.sqsQueue,
       postgresql: databaseStack.postgresDatabase,
       assignPublicIp: AppSettings.ENABLE_PUBLIC_IP,
       enableExecuteCommand: AppSettings.ENABLE_EXECUTE_COMMAND,
