@@ -18,7 +18,6 @@ const databaseStack = new DatabaseStack(app, "databaseStack", networkingStack);
 databaseStack.addDependency(networkingStack);
 
 const computeStack = new ComputeStack(app, "computeStack", networkingStack, databaseStack, messagingStack);
-
 computeStack.addDependency(networkingStack);
 computeStack.addDependency(databaseStack);
 computeStack.addDependency(messagingStack);
