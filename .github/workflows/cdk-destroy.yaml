@@ -36,5 +36,5 @@ jobs:
         role-to-assume: ${{ secrets.GHA_RUNNER_AWS_IAM_ROLE }}
         
     - name: Running cdk destroy
-      run: npx cdk destroy computeStack databaseStack messagingStack networkStack ecrStack --force
+      run: npx cdk destroy --all --force
       

@@ -40,7 +40,7 @@ jobs:
         role-to-assume: ${{ secrets.GHA_RUNNER_AWS_IAM_ROLE }}
 
     - name: Running cdk synth
-      run: npx cdk synth networkStack messagingStack databaseStack computeStack -c imageTag=${{ github.sha }} --require-approval never
+      run: npx cdk synth --all -c imageTag=${{ github.sha }} --require-approval never
 
     - name: Running Checkov
       uses: bridgecrewio/checkov-action@4048c972aae68d0b983a48bb3479aab2d877b898
@@ -52,5 +52,5 @@ jobs:
         format: table
         
     - name: Running cdk diff
-      run: npx cdk diff networkStack messagingStack databaseStack computeStack -c imageTag=${{ github.sha }} --require-approval never
+      run: npx cdk diff --all -c imageTag=${{ github.sha }} --require-approval never
       

@@ -60,7 +60,6 @@ jobs:
           ecr_repo: DASHBOARD_ECR_REPOSITORY
           directory: ./services/dashboard
 
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231
